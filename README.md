@@ -7,5 +7,5 @@ The module you need
 2. sklearn
 3. TBA
 
-# usage
-
+# tutorial I have practiced
+TensorFlow-Tutorials/01_Simple_Linear_Model.ipynb
