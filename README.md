@@ -9,3 +9,4 @@ The module you need
 
 # tutorial I have practiced
 TensorFlow-Tutorials/01_Simple_Linear_Model.ipynb
+TensorFlow-Tutorials/02_Convolutional_Neural_Network.ipynb
