@@ -9,7 +9,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 Abstract:
     This is a program to practice applying tensorflow on 01 Simple Linear Model on https://github.com/Hvass-Labs/TensorFlow-Tutorials.git
 Usage:
-    simple_linear_model.py
+    tutorial_01_simple_linear_model.py
 Practicer:
     Jacob975
 
