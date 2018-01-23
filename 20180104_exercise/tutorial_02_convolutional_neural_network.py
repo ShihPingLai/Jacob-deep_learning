@@ -551,6 +551,18 @@ if __name__ == "__main__":
     optimize(num_iterations=9000)   # We performed 1000 iterations above.
     print_test_accuracy(show_example_errors=True, show_confusion_matrix=True)
     # Visualization of Weights and Layers
+    image1 = data.test.images[0]
+    plot_image(image1)
+    image2 = data.test.images[13]
+    plot_image(image2)
+    plot_conv_weights(weights=weights_conv1)
+    plot_conv_layer(layer=layer_conv1, image=image1)
+    plot_conv_layer(layer=layer_conv1, image=image2)
+    plot_conv_weights(weights=weights_conv2, input_channel=0)
+    plot_conv_weights(weights=weights_conv2, input_channel=1)
+    plot_conv_layer(layer=layer_conv2, image=image1)
+    plot_conv_layer(layer=layer_conv2, image=image2)
+    session.close()
     #-----------------------------------
     # measuring time
     elapsed_time = time.time() - start_time
