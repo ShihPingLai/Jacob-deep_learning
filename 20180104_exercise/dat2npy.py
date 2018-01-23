@@ -2,15 +2,19 @@
 '''
 Abstract:
     This is a program to convert .dat files to npy files
+    there are two options
+    One is source, please uncomment the upper script to use
+    Another is labels, please uncomment the lower scrpt to use
 Usage:
-    dat2npu.py
+    dat2npu.py [file name]
 Editor:
     Jacob975
 
 20170123
 ####################################
 update log
-    20180123 version alpha 1
+20180123 version alpha 1
+    Now it works, the code can convert both source and label into tensorflow readable
 '''
 import tensorflow as tf
 import time
@@ -66,6 +70,7 @@ if __name__ == "__main__":
     # measure times
     start_time = time.time()
     #-----------------------------------
+    '''
     # Load data
     str_data = read_well_known_data(argv[-1])
     data = str2num(str_data)
@@ -77,7 +82,7 @@ if __name__ == "__main__":
     label = str2num(str_label)
     np.save("{0}.npy".format(argv[-1][:-4]), label)
     np.savetxt("{0}.txt".format(argv[-1][:-4]), label)
-    '''
+    
     #-----------------------------------
     # measuring time
     elapsed_time = time.time() - start_time

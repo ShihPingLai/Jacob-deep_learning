@@ -9,51 +9,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 Abstract:
     This is a program to practice applying tensorflow on 01 Simple Linear Model on https://github.com/Hvass-Labs/TensorFlow-Tutorials.git
 Usage:
-    tutorial_01_simple_linear_model.py
+    sed_01.py [source] [label]
 Practicer:
     Jacob975
 
-20170104
+20170123
 ####################################
 update log
-    20180104 version alpha 1
+20180123 version alpha 1
+    the AI always predict 0 for all source.
 '''
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import confusion_matrix
 import time
-from tensorflow.examples.tutorials.mnist import input_data  # used to download data from tutorial mnist.
 import astro_mnist
 from sys import argv
-
-# the def is used to plot data and their labels
-def plot_images(images, cls_true, cls_pred=None):
-    assert len(images) == len(cls_true) == 9
-    # Create figure with 3x3 sub-plots.
-    fig, axes = plt.subplots(3, 3)
-    fig.subplots_adjust(hspace=0.3, wspace=0.3)
-
-    for i, ax in enumerate(axes.flat):
-        # Plot image.
-        ax.imshow(images[i].reshape(img_shape), cmap='binary')
-
-        # Show true and predicted classes.
-        if cls_pred is None:
-            xlabel = "True: {0}".format(cls_true[i])
-        else:
-            xlabel = "True: {0}, Pred: {1}".format(cls_true[i], cls_pred[i])
-
-        ax.set_xlabel(xlabel)
-        
-        # Remove ticks from the plot.
-        ax.set_xticks([])
-        ax.set_yticks([])
-        
-    # Ensure the plot is shown correctly with multiple plots
-    # in a single Notebook cell.
-    plt.show()
-    return
+from help_func import  plot_images
 
 def optimize(num_iterations):
     for i in range(num_iterations):
@@ -153,13 +126,11 @@ def plot_weights():
         if i<3:
             # Get the weights for the i'th digit and reshape it.
             # Note that w.shape == (img_size_flat, 10)
-            image = w[:, i].reshape(img_shape)
-
+            image = w[:, i]
             # Set the label for the sub-plot.
-            ax.set_xlabel("Weights: {0}".format(i))
-
+            ax.set_title("Weights: {0}".format(i))
             # Plot the image.
-            ax.imshow(image, vmin=w_min, vmax=w_max, cmap='seismic')
+            ax.plot(range(8), image)
 
         # Remove ticks from each sub-plot.
         ax.set_xticks([])
@@ -195,7 +166,7 @@ if __name__ == "__main__":
     # Images are stored in one-dimensional arrays of this length.
     img_size_flat = img_size * 1
     # Tuple with height and width of images used to reshape arrays.
-    img_shape = (img_size, 1)
+    img_shape = (1, img_size)
     # Number of classes, one class for each of 10 digits.
     num_classes = 3
     #--------------------------------------------------------------
@@ -223,13 +194,13 @@ if __name__ == "__main__":
     cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y_true)
     cost = tf.reduce_mean(cross_entropy)
     # 5. Optimization method
-    optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.5).minimize(cost)
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.1).minimize(cost)
     correct_prediction = tf.equal(y_pred_cls, y_true_cls)
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     # 6. ready to run
     session = tf.Session()
     session.run(tf.global_variables_initializer())
-    batch_size = 100
+    batch_size = 200
     feed_dict_test = {x: data.test.images, y_true: data.test.labels, y_true_cls: data.test.cls}
     # before run
     print "before run"
@@ -260,6 +231,10 @@ if __name__ == "__main__":
     plot_example_errors()
     plot_weights()
     print_confusion_matrix()
+    # save the result
+    w = session.run(weights)
+    np.save("weight.npy", w)
+    np.savetxt("weight.txt", w)
     #-----------------------------------
     # measuring time
     elapsed_time = time.time() - start_time
