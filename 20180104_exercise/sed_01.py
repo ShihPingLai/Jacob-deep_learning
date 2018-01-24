@@ -10,6 +10,11 @@ Abstract:
     This is a program to practice applying tensorflow on 01 Simple Linear Model on https://github.com/Hvass-Labs/TensorFlow-Tutorials.git
 Usage:
     sed_01.py [source] [label]
+    [source]: It should be a .npy file with m*n 2d array
+    [label]: It should be a .npy file with m length 1d array
+    hint: you can access .npy file with dat2npy.py
+Example:
+    sed_01.py source_sed.npy id.npy
 Practicer:
     Jacob975
 
