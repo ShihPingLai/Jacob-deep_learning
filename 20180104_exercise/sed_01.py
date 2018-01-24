@@ -18,6 +18,8 @@ Practicer:
 update log
 20180123 version alpha 1
     the AI always predict 0 for all source.
+20180124 version alpha 2
+    the AI work properly
 '''
 import tensorflow as tf
 import matplotlib.pyplot as plt
@@ -45,7 +47,7 @@ def optimize(num_iterations):
         # TensorFlow assigns the variables in feed_dict_train
         # to the placeholder variables and then runs the optimizer.
         session.run(optimizer, feed_dict=feed_dict_train)
-        return
+    return
 
 def print_accuracy():
     # Use TensorFlow to compute the accuracy.
@@ -118,12 +120,12 @@ def plot_weights():
 
     # Create figure with 3x4 sub-plots,
     # where the last 2 sub-plots are unused.
-    fig, axes = plt.subplots(3, 1)
+    fig, axes = plt.subplots(num_classes, 1)
     fig.subplots_adjust(hspace=0.4, wspace=0.4)
 
     for i, ax in enumerate(axes.flat):
         # Only use the weights for the first 10 sub-plots.
-        if i<3:
+        if i<num_classes:
             # Get the weights for the i'th digit and reshape it.
             # Note that w.shape == (img_size_flat, 10)
             image = w[:, i]
@@ -169,6 +171,8 @@ if __name__ == "__main__":
     img_shape = (1, img_size)
     # Number of classes, one class for each of 10 digits.
     num_classes = 3
+    # Number of neurals
+    num_neurals = 128
     #--------------------------------------------------------------
     # exercise 1: plot 9 image and their labels.
     # Get the first images from the test-set.
@@ -188,16 +192,20 @@ if __name__ == "__main__":
     biases = tf.Variable(tf.zeros([num_classes]))
     # 3. model, mathematical statement
     logits = tf.matmul(x, weights) + biases
-    y_pred = tf.nn.softmax(logits)                  # normalize the result
+    #-----------------------------------------------
+    # output
+    # result
+    y_pred = tf.nn.softmax(logits)
     y_pred_cls = tf.argmax(y_pred, axis=1)          # take the order of largest number as the answer
     # 4. Cost-function to be optimized
     cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y_true)
     cost = tf.reduce_mean(cross_entropy)
     # 5. Optimization method
-    optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.1).minimize(cost)
+    optimizer = tf.train.AdamOptimizer(learning_rate=0.2).minimize(cost)
     correct_prediction = tf.equal(y_pred_cls, y_true_cls)
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     # 6. ready to run
+    # the code won't work until session cmd.
     session = tf.Session()
     session.run(tf.global_variables_initializer())
     batch_size = 200
@@ -225,16 +233,13 @@ if __name__ == "__main__":
     plot_example_errors()
     plot_weights()
     # run for 10k times
-    optimize(num_iterations=99000)          # We have already performed 1k iteration.
-    print "iterate for 100k times"
+    optimize(num_iterations=9000)          # We have already performed 1k iteration.
+    print "iterate for 10k times"
     print_accuracy()
     plot_example_errors()
     plot_weights()
     print_confusion_matrix()
-    # save the result
-    w = session.run(weights)
-    np.save("weight.npy", w)
-    np.savetxt("weight.txt", w)
+    
     #-----------------------------------
     # measuring time
     elapsed_time = time.time() - start_time

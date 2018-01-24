@@ -70,7 +70,7 @@ def optimize(num_iterations):
         # TensorFlow assigns the variables in feed_dict_train
         # to the placeholder variables and then runs the optimizer.
         session.run(optimizer, feed_dict=feed_dict_train)
-        return
+    return
 
 def print_accuracy():
     # Use TensorFlow to compute the accuracy.
@@ -250,7 +250,7 @@ if __name__ == "__main__":
     plot_example_errors()
     plot_weights()
     # run for 10k times
-    optimize(num_iterations=99000)          # We have already performed 1k iteration.
+    optimize(num_iterations=9000)          # We have already performed 1k iteration.
     print "iterate for 100k times"
     print_accuracy()
     plot_example_errors()
