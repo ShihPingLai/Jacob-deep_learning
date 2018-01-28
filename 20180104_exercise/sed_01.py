@@ -15,7 +15,7 @@ Usage:
     hint: you can access .npy file with dat2npy.py
 Example:
     sed_01.py source_sed.npy id.npy
-Practicer:
+Editor:
     Jacob975
 
 20170123
@@ -24,7 +24,7 @@ update log
 20180123 version alpha 1
     the AI always predict 0 for all source.
 20180124 version alpha 2
-    the AI work properly
+    the AI work properly with Adam optimizer, single linear model
 '''
 import tensorflow as tf
 import matplotlib.pyplot as plt
@@ -115,7 +115,7 @@ def plot_example_errors():
 
 def plot_weights():
     # Get the values for the weights from the TensorFlow variable.
-    w = session.run(weights)
+    w = session.run(weights_1)
     
     # Get the lowest and highest values for the weights.
     # This is used to correct the colour intensity across
@@ -148,10 +148,20 @@ def plot_weights():
     plt.show()
     return
 
+def plot_accuracy(acc_array, iterations):
+    print len(acc_array)
+    print len(iterations)
+    fig = plt.figure("Accuracy")
+    plt.plot(iterations, acc_array)
+    plt.xlabel("iterations")
+    plt.ylabel("accuracy")
+    plt.show()
+    return
+
 #--------------------------------------------
 # main code
 if __name__ == "__main__":
-    VERBOSE = 0
+    VERBOSE = 2
     # measure times
     start_time = time.time()
     # Load data, if no data in given path, download data
@@ -177,7 +187,9 @@ if __name__ == "__main__":
     # Number of classes, one class for each of 10 digits.
     num_classes = 3
     # Number of neurals
-    num_neurals = 128
+    num_neurals = 64
+    # Number of hounder iteration
+    iterations = 100
     #--------------------------------------------------------------
     # exercise 1: plot 9 image and their labels.
     # Get the first images from the test-set.
@@ -185,28 +197,31 @@ if __name__ == "__main__":
     # Get the true classes for those images.
     cls_true = data.test.cls[0:9]
     # Plot the images and labels using our helper-function above.
-    plot_images(images=images, cls_true=cls_true)
+    if VERBOSE>2: plot_images(images=images, cls_true=cls_true)
     #--------------------------------------------------------------
     # exercise 2: run deep learning
     # 1. placeholder, used to save input data
     x = tf.placeholder(tf.float32, [None, img_size_flat])
     y_true = tf.placeholder(tf.float32, [None, num_classes])
     y_true_cls = tf.placeholder(tf.int64, [None])
+    
+    # layer 1
     # 2. model variable, used to save weight or so called, parameters.
-    weights = tf.Variable(tf.zeros([img_size_flat, num_classes]))
-    biases = tf.Variable(tf.zeros([num_classes]))
+    weights_1 = tf.Variable(tf.zeros([img_size_flat, num_classes]))
+    biases_1 = tf.Variable(tf.zeros([num_classes]))
     # 3. model, mathematical statement
-    logits = tf.matmul(x, weights) + biases
+    logits_1 = tf.matmul(x, weights_1) + biases_1
+
     #-----------------------------------------------
     # output
     # result
-    y_pred = tf.nn.softmax(logits)
+    y_pred = tf.nn.softmax(logits_1)
     y_pred_cls = tf.argmax(y_pred, axis=1)          # take the order of largest number as the answer
     # 4. Cost-function to be optimized
-    cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y_true)
+    cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=logits_1, labels=y_true)
     cost = tf.reduce_mean(cross_entropy)
     # 5. Optimization method
-    optimizer = tf.train.AdamOptimizer(learning_rate=0.2).minimize(cost)
+    optimizer = tf.train.AdamOptimizer(learning_rate=0.1).minimize(cost)
     correct_prediction = tf.equal(y_pred_cls, y_true_cls)
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     # 6. ready to run
@@ -215,35 +230,25 @@ if __name__ == "__main__":
     session.run(tf.global_variables_initializer())
     batch_size = 200
     feed_dict_test = {x: data.test.images, y_true: data.test.labels, y_true_cls: data.test.cls}
-    # before run
+    acc_array = []
     print "before run"
+    acc = session.run(accuracy, feed_dict=feed_dict_test)
+    acc_array.append(acc)
     print_accuracy()
-    plot_example_errors()
-    # run for once
-    optimize(num_iterations=1)
-    print "iterate for 1 times"
-    print_accuracy()
-    plot_example_errors()
-    plot_weights()
-    # run for 10 times
-    optimize(num_iterations=9)          # We have already performed 1 iteration.
-    print "iterate for 10 times"
-    print_accuracy()
-    plot_example_errors()
-    plot_weights()
-    # run for 1000 times
-    optimize(num_iterations=990)          # We have already performed 10 iteration.
-    print "iterate for 1k times"
-    print_accuracy()
-    plot_example_errors()
-    plot_weights()
-    # run for 10k times
-    optimize(num_iterations=9000)          # We have already performed 1k iteration.
-    print "iterate for 10k times"
-    print_accuracy()
-    plot_example_errors()
-    plot_weights()
-    print_confusion_matrix()
+    print "training start"
+    for i in xrange(iterations):
+        print "------ {0}00 iterations -----".format(i+1)
+        optimize(num_iterations=100)
+        acc = session.run(accuracy, feed_dict=feed_dict_test)
+        acc_array.append(acc)
+        if VERBOSE>0: print_accuracy()
+        if VERBOSE>2:
+            plot_example_errors()
+            plot_weight()
+    if VERBOSE>1:
+        f_iterations = iterations*100+100
+        plot_accuracy(acc_array, range(0, f_iterations, 100))
+        print_confusion_matrix()
     
     #-----------------------------------
     # measuring time
