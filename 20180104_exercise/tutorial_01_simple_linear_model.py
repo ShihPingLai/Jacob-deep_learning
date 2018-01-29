@@ -10,6 +10,8 @@ Abstract:
     This is a program to practice applying tensorflow on 01 Simple Linear Model on https://github.com/Hvass-Labs/TensorFlow-Tutorials.git
 Usage:
     tutorial_01_simple_linear_model.py
+Editor:
+    Magnus Erik Hvass Pedersen
 Practicer:
     Jacob975
 

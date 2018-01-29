@@ -10,6 +10,8 @@ Abstract:
     This is a program to practice applying tensorflow on 02 Convolutional Neural Network on https://github.com/Hvass-Labs/TensorFlow-Tutorials.git
 Usage:
     tutorial_02_convolutional_neural_network.py
+Editor:
+    Magnus Erik Hvass Pedersen
 Practicer:
     Jacob975
 
