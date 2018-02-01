@@ -339,14 +339,14 @@ if __name__ == "__main__":
     with pt.defaults_scope(activation_fn = tf.nn.relu):
         y_pred, loss = x_pretty.\
             flatten().\
-            fully_connected(size = 128, name='layer_fc1').\
-            fully_connected(size = 128, name='layer_fc2').\
-            fully_connected(size = 128, name='layer_fc3').\
+            fully_connected(size = 32, name='layer_fc1').\
+            fully_connected(size = 64, name='layer_fc2').\
+            fully_connected(size = 96, name='layer_fc3').\
             fully_connected(size = 128, name='layer_fc4').\
-            fully_connected(size = 128, name='layer_fc5').\
-            fully_connected(size = 128, name='layer_fc6').\
-            fully_connected(size = 128, name='layer_fc7').\
-            fully_connected(size = 128, name='layer_fc8').\
+            fully_connected(size = 160, name='layer_fc5').\
+            fully_connected(size = 192, name='layer_fc6').\
+            fully_connected(size = 224, name='layer_fc7').\
+            fully_connected(size = 256, name='layer_fc8').\
             softmax_classifier(num_classes=num_classes, labels=y_true)
     optimizer = tf.train.AdamOptimizer(learning_rate=1e-4).minimize(loss)
     y_pred_cls = tf.argmax(y_pred, dimension=1)
