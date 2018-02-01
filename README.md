@@ -19,3 +19,5 @@ TensorFlow-Tutorials/01_Simple_Linear_Model.ipynb
 TensorFlow-Tutorials/02_Convolutional_Neural_Network.ipynb
 
 TensorFlow-Tutorials/03_PrettyTensor.ipynb
+
+TensorFlow-Tutorials/04_Save_Restore.ipynb
