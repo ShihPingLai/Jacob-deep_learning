@@ -157,7 +157,7 @@ def read_data_sets(images_name,
                    one_hot=False,
                    dtype=dtypes.float32,
                    reshape=True,
-                   validation_size=0,
+                   validation_size=5000,
                    test_size = 10000,
                    seed=None):
 
