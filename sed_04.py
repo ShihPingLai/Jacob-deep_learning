@@ -20,11 +20,13 @@ Practicer:
 #   This code is made in python3 #
 ##################################
 
-20170128
+20170206
 ####################################
 update log
     20180206 version alpha 1
         After training for batch = 512, 200000 iteraion, AI can identify 87% of YSO.
+    20180210 version alpha 2
+        After training for batch = 512, 1M iterations, AI can identify 93.43% of YSO.
 '''
 from IPython.display import Image       # Used to create flowcart
 import matplotlib.pyplot as plt
@@ -52,7 +54,6 @@ def optimize(num_iterations):
     global total_iterations
     global best_validation_accuracy
     global last_improvement
-
     # Start-time used for printing time-usage below.
     start_time = time.time()
 
@@ -83,19 +84,21 @@ def optimize(num_iterations):
 
             # Calculate the accuracy on the training-batch.
             acc_train = session.run(accuracy, feed_dict=feed_dict_train)
-
+            loss_validation = session.run(loss, feed_dict=feed_dict_train)
             # Calculate the accuracy on the validation-set.
             # The function returns 2 values but we only need the first.
             acc_validation, _ = validation_accuracy()
-
+            # Save the acc and loss of each iter
+            validation_list.append([total_iterations, acc_validation, loss_validation])
             # If validation accuracy is an improvement over best-known.
             if acc_validation > best_validation_accuracy:
                 # Update the best-known validation accuracy.
                 best_validation_accuracy = acc_validation
-
+            
                 # Set the iteration for the last improvement to current.
                 last_improvement = total_iterations
-
+                # Save the acc and loss of improved iter
+                improved_validation_list.append([total_iterations*100, acc_validation, loss_validation])
                 # Save all variables of the TensorFlow graph to file.
                 saver.save(sess=session, save_path=save_path)
 
@@ -280,6 +283,15 @@ def validation_accuracy():
     # Calculate the classification accuracy and return it.
     return cls_accuracy(correct)
 
+def save_val_result():
+    val_array = np.array(validation_list)
+    imp_val_array = np.array(improved_validation_list)
+    val_name = save_dir+"validation_result.npy"
+    imp_val_name = save_dir+"improved_validation_result.npy"
+    np.save(val_name, val_array)
+    np.save(imp_val_name, imp_val_array)
+    return
+
 #--------------------------------------------
 # main code
 if __name__ == "__main__":
@@ -323,10 +335,11 @@ if __name__ == "__main__":
     x = tf.placeholder(tf.float32, shape=[None, img_size_flat], name='x')
     x_image = tf.reshape(x, [-1, img_size, 1, num_channels])
     y_true = tf.placeholder(tf.float32, shape=[None, num_classes], name='y_true')
-    y_true_cls = tf.argmax(y_true, dimension=1)
+    y_true_cls = tf.argmax(y_true, axis=1)
     #-----------------------------------
     # PrettyTensor Implementation
     x_pretty = pt.wrap(x_image)
+    print ("Here is 333 line")
     with pt.defaults_scope(activation_fn=tf.nn.relu6):
         y_pred, loss = x_pretty.\
             flatten().\
@@ -335,12 +348,15 @@ if __name__ == "__main__":
             fully_connected(size = 128, name='layer_fc3').\
             fully_connected(size = 128, name='layer_fc4').\
             softmax_classifier(num_classes=num_classes, labels=y_true)
+    print ("Here is 342 line")
     optimizer = tf.train.AdamOptimizer(learning_rate=1e-4).minimize(loss)
-    y_pred_cls = tf.argmax(y_pred, dimension=1)
+    y_pred_cls = tf.argmax(y_pred, axis=1)
     correct_prediction = tf.equal(y_pred_cls, y_true_cls)
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     #-----------------------------------
     # Saver
+    validation_list = []
+    improved_validation_list = []
     saver = tf.train.Saver()
     save_dir = 'checkpoints/'
     if not os.path.exists(save_dir):
@@ -353,7 +369,7 @@ if __name__ == "__main__":
         session.run(tf.global_variables_initializer())
     init_variables()
     # restore previous weight
-    saver.restore(sess=session, save_path=save_path)
+    #saver.restore(sess=session, save_path=save_path)
     train_batch_size = 512
     # Best validation accuracy seen so far.
     best_validation_accuracy = 0.0
@@ -366,7 +382,9 @@ if __name__ == "__main__":
     # Split the data-set in batches of this size to limit RAM usage.
     batch_size = 512
     #print_test_accuracy()
-    optimize(num_iterations=100000)
+    optimize(num_iterations=1000000)
+    # save the validation result
+    save_val_result()
     print_test_accuracy(show_example_errors=True, show_confusion_matrix=True)
     '''
     # This part demo how to reload your parameters
