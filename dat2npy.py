@@ -48,7 +48,7 @@ from sys import argv
 def read_well_known_data(data_name):
     f = open(data_name, 'r')
     data = np.array([])
-    for line in f.readlines():
+    for ind, line in enumerate(f.readlines(), start = 0):
         # skip if no data or it's a hint.
         if not len(line) or line.startswith('#'):
             continue
@@ -56,9 +56,9 @@ def read_well_known_data(data_name):
         # clean the empty element
         row_c = np.array([x for x in row if x != ""])
         if len(row_c) != 8:
-            print row_c
-            print "the row is wrong."
-            break
+            print line[:-1]
+            print "the row {0} is wrong.\n".format(ind)
+            continue
         data = np.append(data, row_c)
     w = 8
     h = len(data)/8
