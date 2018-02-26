@@ -27,6 +27,9 @@ update log
         After training for batch = 512, 200000 iteraion, AI can identify 87% of YSO.
     20180210 version alpha 2
         After training for batch = 512, 1M iterations, AI can identify 93.43% of YSO.
+    20180226 version alpha 3 
+        complete the printed infomations
+        the learning rate will decay as process going on.
 '''
 from IPython.display import Image       # Used to create flowcart
 import matplotlib.pyplot as plt
@@ -302,7 +305,7 @@ if __name__ == "__main__":
     # Load Data
     images_name = argv[1]
     labels_name = argv[2]
-    data = astro_mnist.read_data_sets(images_name, labels_name)
+    data = astro_mnist.read_data_sets(images_name, labels_name, validation_size=200, test_size=400 )
     print("Size of:")
     print("- Training-set:\t\t{}".format(len(data.train.labels)))
     print("- Test-set:\t\t{}".format(len(data.test.labels)))
@@ -320,6 +323,15 @@ if __name__ == "__main__":
     num_channels = 1
     # Number of classes, one class for each of 10 digits.
     num_classes = 3
+    # the number of iterations
+    iters = 10000000
+    print ("number of iterations = {0}".format(iters))
+    # the size of a batch    
+    train_batch_size = 128
+    print ("train batch size = {0}".format(train_batch_size))
+    # Split the data-set in batches of this size to limit RAM usage.
+    batch_size = 128 
+    print ("batch size = {0}".format(batch_size))
     #-----------------------------------
     # Get the true classes for those images.
     data.test.cls = np.argmax(data.test.labels, axis=1)
@@ -339,7 +351,6 @@ if __name__ == "__main__":
     #-----------------------------------
     # PrettyTensor Implementation
     x_pretty = pt.wrap(x_image)
-    print ("Here is 333 line")
     with pt.defaults_scope(activation_fn=tf.nn.relu6):
         y_pred, loss = x_pretty.\
             flatten().\
@@ -348,8 +359,10 @@ if __name__ == "__main__":
             fully_connected(size = 128, name='layer_fc3').\
             fully_connected(size = 128, name='layer_fc4').\
             softmax_classifier(num_classes=num_classes, labels=y_true)
-    print ("Here is 342 line")
-    optimizer = tf.train.AdamOptimizer(learning_rate=1e-4).minimize(loss)
+    starter_learning_rate = 0.1
+    global_step = tf.Variable(0, trainable=False)
+    learning_rate = tf.train.exponential_decay(starter_learning_rate, train_batch_size * global_step , 1000, 0.96, staircase=True)
+    optimizer = tf.train.AdamOptimizer(learning_rate=1e-4).minimize(loss, global_step = global_step)
     y_pred_cls = tf.argmax(y_pred, axis=1)
     correct_prediction = tf.equal(y_pred_cls, y_true_cls)
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -358,7 +371,7 @@ if __name__ == "__main__":
     validation_list = []
     improved_validation_list = []
     saver = tf.train.Saver()
-    save_dir = 'checkpoints/'
+    save_dir = 'checkpoints_{0}/'.format(iters)
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     save_path = os.path.join(save_dir, 'best_validation')
@@ -370,7 +383,6 @@ if __name__ == "__main__":
     init_variables()
     # restore previous weight
     #saver.restore(sess=session, save_path=save_path)
-    train_batch_size = 512
     # Best validation accuracy seen so far.
     best_validation_accuracy = 0.0
     # Iteration-number for last improvement to validation accuracy.
@@ -379,10 +391,7 @@ if __name__ == "__main__":
     require_improvement = 1000
     # Counter for total number of iterations performed so far.
     total_iterations = 0
-    # Split the data-set in batches of this size to limit RAM usage.
-    batch_size = 512
-    #print_test_accuracy()
-    optimize(num_iterations=1000000)
+    optimize(num_iterations=iters)
     # save the validation result
     save_val_result()
     print_test_accuracy(show_example_errors=True, show_confusion_matrix=True)
