@@ -3,7 +3,7 @@
 Abstract:
     This is a code for test AI with given sed data.
 Usage:
-    sed_04.py [source] [id]
+    sed_04.py [source] [id] [AI]
 Editor and Practicer:
     Jacob975
 
@@ -15,8 +15,10 @@ Editor and Practicer:
 20170225
 ####################################
 update log
-    20170225 version alpha 1:
+    20180225 version alpha 1:
     the code work well.
+    20180226 version alpha 2:
+    the AI can be choosed.
 '''
 from IPython.display import Image       # Used to create flowcart
 import matplotlib.pyplot as plt
@@ -190,15 +192,6 @@ def validation_accuracy():
     # Calculate the classification accuracy and return it.
     return cls_accuracy(correct)
 
-def save_val_result():
-    val_array = np.array(validation_list)
-    imp_val_array = np.array(improved_validation_list)
-    val_name = save_dir+"validation_result.npy"
-    imp_val_name = save_dir+"improved_validation_result.npy"
-    np.save(val_name, val_array)
-    np.save(imp_val_name, imp_val_array)
-    return
-
 #--------------------------------------------
 # main code
 if __name__ == "__main__":
@@ -209,6 +202,7 @@ if __name__ == "__main__":
     # Load Data
     images_name = argv[1]
     labels_name = argv[2]
+    save_dir = argv[3]
     data = astro_mnist.read_data_sets(images_name, labels_name, validation_size=0, test_size =0)
     print("Size of:")
     print("- Training-set:\t\t{}".format(len(data.train.labels)))
@@ -258,10 +252,8 @@ if __name__ == "__main__":
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     #-----------------------------------
     # Saver
-    validation_list = []
-    improved_validation_list = []
     saver = tf.train.Saver()
-    save_dir = 'checkpoints/'
+    print ("AI:{0}".format(save_dir))
     if not os.path.exists(save_dir):
         print ("No AI can be restore, please check folder ./checkpoints")
     save_path = os.path.join(save_dir, 'best_validation')
@@ -274,10 +266,9 @@ if __name__ == "__main__":
     # restore previous weight
     saver.restore(sess=session, save_path=save_path)
     batch_size = 512
+    print ("batch_size = {0}".format(batch_size))
     # test the restored AI, show confusion matrix and example_errors
     print_test_accuracy(show_example_errors=True, show_confusion_matrix=True)
-    # save the validation result
-    save_val_result()
     '''
     # This part demo how to reload your parameters
     init_variables()
