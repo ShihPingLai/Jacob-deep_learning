@@ -30,6 +30,8 @@ update log
     20180226 version alpha 3 
         complete the printed infomations
         the learning rate will decay as process going on.
+    20180227 version alpha 4
+        complete the printed infomations
 '''
 from IPython.display import Image       # Used to create flowcart
 import matplotlib.pyplot as plt
@@ -209,16 +211,16 @@ def print_test_accuracy(show_example_errors=False,
     # Print the accuracy.
     msg = "Accuracy on Test-Set: {0:.1%} ({1} / {2})"
     print(msg.format(acc, num_correct, num_images))
+    
+    # Plot the confusion matrix, if desired.
+    if show_confusion_matrix:
+        print("Confusion Matrix:")
+        plot_confusion_matrix(cls_pred=cls_pred)
 
     # Plot some examples of mis-classifications, if desired.
     if show_example_errors:
         print("Example errors:")
         plot_example_errors(cls_pred=cls_pred, correct=correct)
-
-    # Plot the confusion matrix, if desired.
-    if show_confusion_matrix:
-        print("Confusion Matrix:")
-        plot_confusion_matrix(cls_pred=cls_pred)
 
 def predict_cls(images, labels, cls_true):
     # Number of images.
@@ -359,10 +361,15 @@ if __name__ == "__main__":
             fully_connected(size = 128, name='layer_fc3').\
             fully_connected(size = 128, name='layer_fc4').\
             softmax_classifier(num_classes=num_classes, labels=y_true)
-    starter_learning_rate = 0.1
+    starter_learning_rate = 1e-4
+    print ("starter learning rate = {0}".format(starter_learning_rate))
+    base = 0.96
+    print ("base = {0}".format(base))
+    unit_step = 100000
+    print ("unit_step = {0}".format(unit_step))
     global_step = tf.Variable(0, trainable=False)
-    learning_rate = tf.train.exponential_decay(starter_learning_rate, train_batch_size * global_step , 1000, 0.96, staircase=True)
-    optimizer = tf.train.AdamOptimizer(learning_rate=1e-4).minimize(loss, global_step = global_step)
+    learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step , unit_step, base, staircase=True)
+    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss, global_step = global_step)
     y_pred_cls = tf.argmax(y_pred, axis=1)
     correct_prediction = tf.equal(y_pred_cls, y_true_cls)
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -392,6 +399,7 @@ if __name__ == "__main__":
     # Counter for total number of iterations performed so far.
     total_iterations = 0
     optimize(num_iterations=iters)
+    print ( "final_learning_rate = {0}".format(session.run(learning_rate)))
     # save the validation result
     save_val_result()
     print_test_accuracy(show_example_errors=True, show_confusion_matrix=True)
