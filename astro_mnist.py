@@ -157,28 +157,36 @@ def read_data_sets(images_name,
                    one_hot=False,
                    dtype=dtypes.float32,
                    reshape=True,
-                   validation_size=5000,
-                   test_size = 10000,
+                   # Total size are 10
+                   train_weight = 7,
+                   validation_weight=1,
+                   test_weight = 2,
                    seed=None):
 
   # load data
   images = numpy.load(images_name)
   images = images.reshape((len(images), len(images[0]), 1, 1))
   labels = numpy.load(labels_name)
+  '''
   if not 0 <= validation_size <= len(images):
     raise ValueError('Validation size should be between 0 and {}. Received: {}.'.format(len(images), validation_size))
+  '''
   # shuffle
   randomize = numpy.arange(len(images))
   numpy.random.shuffle(randomize)
   images = images[randomize]
   labels = labels[randomize]
   # distribute
+  total_weight = train_weight + validation_weight + test_weight
+  train_size = int(len(images) * train_weight/total_weight)
+  validation_size = int(len(images) * validation_weight/total_weight)
+  test_size = int(len(images) * test_weight/total_weight)
   validation_images = images[:validation_size]
   validation_labels = labels[:validation_size]
-  test_images = images[-1*test_size:]
-  test_labels = labels[-1*test_size:]
-  train_images = images[validation_size:-1*test_size]
-  train_labels = labels[validation_size:-1*test_size]
+  test_images = images[validation_size:validation_size + test_size]
+  test_labels = labels[validation_size:validation_size + test_size]
+  train_images = images[validation_size + test_size:]
+  train_labels = labels[validation_size + test_size:]
   options = dict(dtype=dtype, reshape=reshape, seed=seed)
 
   train = DataSet(train_images, train_labels, **options)
