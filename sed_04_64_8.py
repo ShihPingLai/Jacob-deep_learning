@@ -75,7 +75,7 @@ def optimize(num_iterations):
             print_test_accuracy(show_confusion_matrix=True)
             print ("======================")
             # switch to next checkpoint
-            save_dir = 'AI_64_8/checkpoints_{0}/'.format(milestones[key+1])
+            save_dir = 'AI_64_8_MaxZero3/checkpoints_{0}/'.format(milestones[key+1])
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
             save_path = os.path.join(save_dir, 'best_validation')
@@ -300,7 +300,7 @@ def validation_accuracy():
     
     # Calculate the classification accuracy and return it.
     return cls_accuracy(correct)
-
+'''
 def save_val_result():
     val_array = np.array(validation_list)
     imp_val_array = np.array(improved_validation_list)
@@ -309,7 +309,7 @@ def save_val_result():
     np.save(val_name, val_array)
     np.save(imp_val_name, imp_val_array)
     return
-
+'''
 #--------------------------------------------
 # main code
 if __name__ == "__main__":
@@ -320,7 +320,7 @@ if __name__ == "__main__":
     # Load Data
     images_name = argv[1]
     labels_name = argv[2]
-    data = astro_mnist.read_data_sets(images_name, labels_name, validation_size=200, test_size=400 )
+    data = astro_mnist.read_data_sets(images_name, labels_name)
     print("Size of:")
     print("- Training-set:\t\t{}".format(len(data.train.labels)))
     print("- Test-set:\t\t{}".format(len(data.test.labels)))
@@ -339,13 +339,13 @@ if __name__ == "__main__":
     # Number of classes, one class for each of 10 digits.
     num_classes = 3
     # the number of iterations
-    iters = 5000000
+    iters = 10000000
     print ("number of iterations = {0}".format(iters))
     # the size of a batch    
-    train_batch_size = 128
+    train_batch_size = 512
     print ("train batch size = {0}".format(train_batch_size))
     # Split the data-set in batches of this size to limit RAM usage.
-    batch_size = 128 
+    batch_size = 512
     print ("batch size = {0}".format(batch_size))
     #-----------------------------------
     # Get the true classes for those images.
@@ -414,7 +414,7 @@ if __name__ == "__main__":
     optimize(num_iterations=iters)
     print ( "final_learning_rate = {0}".format(session.run(learning_rate)))
     # save the validation result
-    save_val_result()
+    #save_val_result()
     print_test_accuracy(show_example_errors=True, show_confusion_matrix=True)
     '''
     # This part demo how to reload your parameters
