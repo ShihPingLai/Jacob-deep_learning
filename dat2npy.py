@@ -37,6 +37,8 @@ update log
 20180124 version alpha 2
     1. Now feature, you can choose processing label or data by argv.
     2. Now the data will be normalized.
+20180301 version alpha 3
+    1. You can choose how many zero will be tolerated.
 '''
 import tensorflow as tf
 import time
@@ -91,6 +93,16 @@ def str2num(inp):
     outp = outp.reshape((h, w))
     return outp
 
+def zero_filter(inp, maximun):
+    outp = [row for row in inp if len(row) - np.count_nonzero(row) <= maximun]
+    if maximun != 0:
+        adj = "_MaxZero{0}".format(maximun)
+    elif maximun == 0:
+        adj = "_nozero"
+    elif maximun == -1:
+        return inp, ""
+    return outp, adj
+
 #--------------------------------------------
 # main code
 if __name__ == "__main__":
@@ -106,14 +118,18 @@ if __name__ == "__main__":
             do_label = True
         if word == "-d":
             do_data = True
+
     #-----------------------------------
     if do_data:
         # Load data
         str_data = read_well_known_data(argv[-1])
         data = str2num(str_data)
-        n_data = normalize(data)
-        np.save("{0}.npy".format(argv[-1][:-4]), n_data)
-        np.savetxt("{0}.txt".format(argv[-1][:-4]), n_data)
+        data_n = normalize(data)
+        for i in range(4):
+            # zero filter
+            data_n_f, adj = zero_filter(data_n, i)
+            np.save("{0}{1}.npy".format(argv[-1][:-4], adj), data_n_f)
+            np.savetxt("{0}{1}.txt".format(argv[-1][:-4], adj), data_n_f)
     if do_label:
         # Load label
         str_label = read_well_known_label(argv[-1])
