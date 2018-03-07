@@ -343,11 +343,17 @@ if __name__ == "__main__":
     # the number of iterations
     iters = 1000000
     print ("number of iterations = {0}".format(iters))
-    # the size of a batch    
-    train_batch_size = 512
+    # the size of a batch
+    if len(data.validation.labels) < 512:
+        train_batch_size = 128
+    else:
+        train_batch_size = 512
     print ("train batch size = {0}".format(train_batch_size))
     # Split the data-set in batches of this size to limit RAM usage.
-    batch_size = 512
+    if len(data.validation.labels) < 512:
+        batch_size = 128
+    else:
+        batch_size = 512
     print ("batch size = {0}".format(batch_size))
     #-----------------------------------
     # Get the true classes for those images.
