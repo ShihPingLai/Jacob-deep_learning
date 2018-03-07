@@ -211,7 +211,8 @@ if __name__ == "__main__":
     #-----------------------------------
     # Data dimension
     # We know that MNIST images are 28 pixels in each dimension.
-    img_size = 8
+    img_size = len(data.test.images[0])
+    print ("image size = {0}".format(img_size))
     # Images are stored in one-dimensional arrays of this length.
     img_size_flat = img_size * 1
     # Tuple with height and width of images used to reshape arrays.
