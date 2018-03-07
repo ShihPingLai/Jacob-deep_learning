@@ -27,7 +27,10 @@ update log
     20180301 version alpha 1
     The code is base on sed_04
     1. Add milestone in the optimize iteration, when acheive the milestone, AI will be saved and test to a new folder.
-    2. the neural network is 64 neurals per layer, 8 layers. 
+    2. the neural network is 64 neurals per layer, 8 layers.
+
+    20180306 version alpha 2
+    1. add flexible data length.
 '''
 from IPython.display import Image       # Used to create flowcart
 import matplotlib.pyplot as plt
@@ -328,8 +331,9 @@ if __name__ == "__main__":
     data.test.cls = np.argmax(data.test.labels, axis=1)
     #-----------------------------------
     # Data dimension
-    # We know that MNIST images are 28 pixels in each dimension.
-    img_size = 8
+    # We know that from the length of a data. 
+    img_size = len(data.train.images[0])
+    print ("image size = {0}".format(img_size))
     # Images are stored in one-dimensional arrays of this length.
     img_size_flat = img_size * 1
     # Tuple with height and width of images used to reshape arrays.
