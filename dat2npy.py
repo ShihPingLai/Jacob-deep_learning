@@ -99,18 +99,22 @@ if __name__ == "__main__":
         data = np.array(str_data, dtype = float)
         data_n = normalize(data)
         # zero filter
-        for i in xrange(data_width):
+        for i in xrange(data_width+1):
             data_n_z = zero_filter(data_n, i)
             print "MaxZero = {0}, number of data = {1}".format(i, len(data_n_z))
             label_z = np.array([ind for x in range(len(data_n_z)) ])
+            label_z_f = [[0 for k in range(3)] for j in range(len(label_z))]
+            for u in xrange(len(label_z_f)):
+                label_z_f[u][int(label_z[u])] = 1
             # stack them
             sum_data[i] = np.append(sum_data[i], data_n_z)
-            sum_label[i] = np.append(sum_label[i], label_z)
+            sum_label[i] = np.append(sum_label[i], label_z_f)
     # save data
     print "###############################"
     print "save data"
     for i in xrange(data_width+1):
         sum_data[i] = np.reshape(sum_data[i], (-1, data_width))
+        sum_label[i] = np.reshape(sum_label[i], (-1, 3))
         print "number of data with MaxZero {0} = {1}".format(i, len(sum_data[i]))
         np.save("source_sed_MaxZero{0}.npy".format(i), sum_data[i])
         np.savetxt("source_sed_MaxZero{0}.txt".format(i), sum_data[i])
