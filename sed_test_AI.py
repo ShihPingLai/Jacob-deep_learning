@@ -203,7 +203,7 @@ if __name__ == "__main__":
     images_name = argv[1]
     labels_name = argv[2]
     save_dir = argv[3]
-    data = astro_mnist.read_data_sets(images_name, labels_name, validation_size=0, test_size =0)
+    data = astro_mnist.read_data_sets(images_name, labels_name, train_weight = 1, validation_weight = 0, test_weight = 0)
     print("Size of:")
     print("- Training-set:\t\t{}".format(len(data.train.labels)))
     print("- Test-set:\t\t{}".format(len(data.test.labels)))
