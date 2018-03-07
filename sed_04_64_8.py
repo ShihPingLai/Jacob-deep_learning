@@ -78,7 +78,7 @@ def optimize(num_iterations):
             print_test_accuracy(show_confusion_matrix=True)
             print ("======================")
             # switch to next checkpoint
-            save_dir = 'AI_64_8_{0}/checkpoints_{1}/'.format(argv[1], milestones[key+1])
+            save_dir = 'AI_64_8_{0}/checkpoints_{1}/'.format(argv[1][:-4], milestones[key+1])
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
             save_path = os.path.join(save_dir, 'best_validation')
