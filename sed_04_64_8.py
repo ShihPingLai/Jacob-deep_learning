@@ -416,7 +416,7 @@ if __name__ == "__main__":
     # Iteration-number for last improvement to validation accuracy.
     last_improvement = 0
     # Stop optimization if no improvement found in this many iterations.
-    require_improvement = 1000000
+    require_improvement = 500000
     # Counter for total number of iterations performed so far.
     total_iterations = 0
     optimize(num_iterations=iters)
