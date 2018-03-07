@@ -78,7 +78,7 @@ def optimize(num_iterations):
             print_test_accuracy(show_confusion_matrix=True)
             print ("======================")
             # switch to next checkpoint
-            save_dir = 'AI_64_8_MaxZero3/checkpoints_{0}/'.format(milestones[key+1])
+            save_dir = 'AI_64_8_{0}/checkpoints_{1}/'.format(argv[1], milestones[key+1])
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
             save_path = os.path.join(save_dir, 'best_validation')
@@ -135,13 +135,11 @@ def optimize(num_iterations):
             print(msg.format(i + 1, acc_train, acc_validation, improved_str))
         
         # If no improvement found in the required number of iterations.
-        '''
         if total_iterations - last_improvement > require_improvement:
             print("No improvement found in a while, stopping optimization.")
 
             # Break out from the for-loop.
             break
-        '''
             
     # Ending time.
     end_time = time.time()
@@ -343,7 +341,7 @@ if __name__ == "__main__":
     # Number of classes, one class for each of 10 digits.
     num_classes = 3
     # the number of iterations
-    iters = 10000000
+    iters = 1000000
     print ("number of iterations = {0}".format(iters))
     # the size of a batch    
     train_batch_size = 512
@@ -412,7 +410,7 @@ if __name__ == "__main__":
     # Iteration-number for last improvement to validation accuracy.
     last_improvement = 0
     # Stop optimization if no improvement found in this many iterations.
-    require_improvement = 1000
+    require_improvement = 1000000
     # Counter for total number of iterations performed so far.
     total_iterations = 0
     optimize(num_iterations=iters)
