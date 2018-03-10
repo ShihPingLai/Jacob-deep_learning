@@ -31,6 +31,9 @@ update log
 
     20180306 version alpha 2
     1. add flexible data length.
+
+    20180310 version alpha 3
+    1. Training set, validation set, test set will be saved after arrangement.
 '''
 from IPython.display import Image       # Used to create flowcart
 import matplotlib.pyplot as plt
@@ -301,16 +304,7 @@ def validation_accuracy():
     
     # Calculate the classification accuracy and return it.
     return cls_accuracy(correct)
-'''
-def save_val_result():
-    val_array = np.array(validation_list)
-    imp_val_array = np.array(improved_validation_list)
-    val_name = save_dir+"validation_result.npy"
-    imp_val_name = save_dir+"improved_validation_result.npy"
-    np.save(val_name, val_array)
-    np.save(imp_val_name, imp_val_array)
-    return
-'''
+
 #--------------------------------------------
 # main code
 if __name__ == "__main__":
@@ -327,6 +321,19 @@ if __name__ == "__main__":
     print("- Test-set:\t\t{}".format(len(data.test.labels)))
     print("- Validation-set:\t{}".format(len(data.validation.labels)))
     data.test.cls = np.argmax(data.test.labels, axis=1)
+    # save the distribution
+    np.save("training_set_{0}.npy".format(argv[1][:-4]), data.train.images)
+    np.savetxt("training_set_{0}.txt".format(argv[1][:-4]), data.train.images)
+    np.save("training_label_{0}.npy".format(argv[1][:-4]), data.train.labels)
+    np.savetxt("training_label_{0}.txt".format(argv[1][:-4]), data.train.labels)
+    np.save("validation_set_{0}.npy".format(argv[1][:-4]), data.validation.images)
+    np.savetxt("validation_set_{0}.txt".format(argv[1][:-4]), data.validation.images)
+    np.save("validation_labels_{0}.npy".format(argv[1][:-4]), data.validation.labels)
+    np.savetxt("validation_labels_{0}.txt".format(argv[1][:-4]), data.validation.labels)
+    np.save("test_set_{0}.npy".format(argv[1][:-4]), data.test.images)
+    np.savetxt("test_set_{0}.txt".format(argv[1][:-4]), data.test.images)
+    np.save("test_labels_{0}.npy".format(argv[1][:-4]), data.test.labels)
+    np.savetxt("test_labels_{0}.txt".format(argv[1][:-4]), data.test.labels)
     #-----------------------------------
     # Data dimension
     # We know that from the length of a data. 
@@ -421,8 +428,6 @@ if __name__ == "__main__":
     total_iterations = 0
     optimize(num_iterations=iters)
     print ( "final_learning_rate = {0}".format(session.run(learning_rate)))
-    # save the validation result
-    #save_val_result()
     print_test_accuracy(show_example_errors=True, show_confusion_matrix=True)
     '''
     # This part demo how to reload your parameters
