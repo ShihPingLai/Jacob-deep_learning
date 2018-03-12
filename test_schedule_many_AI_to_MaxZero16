@@ -1,0 +1,7 @@
+#!/bin/csh
+
+set i=1
+while($i <= 5)
+        sed_test_AI_64_8.py source_sed_MaxZero16.npy source_id_MaxZero16.npy /mazu/users/Jacob975/data_Evan_et_al/witherror/AI_64_8_source_sed_MaxZero11_$i/checkpoints_500000.0 > MaxZero16_tested_by_Evan_et_al_MaxZero11_$i
+        @ i++
+end
