@@ -272,7 +272,7 @@ if __name__ == "__main__":
     batch_size = 512
     print ("batch_size = {0}".format(batch_size))
     # test the restored AI, show confusion matrix and example_errors
-    print_test_accuracy(show_example_errors=True, show_confusion_matrix=True)
+    print_test_accuracy(show_example_errors=False, show_confusion_matrix=False)
     '''
     # This part demo how to reload your parameters
     init_variables()
