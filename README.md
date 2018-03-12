@@ -13,6 +13,9 @@ The module you need
 If you want to install tensorflow with gpu compiled version, you need
 1. bazel
 
+The git you need
+1. TensorFlow-Tutorials
+
 # tutorial I have practiced
 TensorFlow-Tutorials/01_Simple_Linear_Model.ipynb
 
@@ -21,3 +24,7 @@ TensorFlow-Tutorials/02_Convolutional_Neural_Network.ipynb
 TensorFlow-Tutorials/03_PrettyTensor.ipynb
 
 TensorFlow-Tutorials/04_Save_Restore.ipynb
+
+TensorFlow-Tutorials/05_Ensemble_Learning.ipynb
+
+TensorFlow-Tutorials/06_CIFAR-10.ipynb
