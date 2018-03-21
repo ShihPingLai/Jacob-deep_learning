@@ -10,7 +10,7 @@ Abstract:
     This is a code for train AI to identify YSO from SED data
     with 64 neurals per layer, 8 layers.
 Usage:
-    sed_04_64_8.py [source] [id]
+    sed_04_64_8_milestone.py [source] [id]
 
 Result tree:
 
@@ -45,8 +45,9 @@ update log
     20180310 version alpha 3
     1. Training set, validation set, test set will be saved after arrangement.
 
-    20180320 version alpha 4 
-    1. arrange saving direction.
+    20180320 version alpha 4
+    1. now the code save both cls_pred and cls_true, which is used to trace correction.
+    2. now the code save index before shuffling.
 '''
 from IPython.display import Image       # Used to create flowcart
 import matplotlib.pyplot as plt
@@ -54,7 +55,7 @@ import tensorflow as tf
 import numpy as np
 from sklearn.metrics import confusion_matrix
 import time
-from datetime import timedelta, datetime
+from datetime import timedelta
 from sys import argv
 from help_func import plot_images
 from save_lib import save_arrangement, save_cls_pred, save_cls_true
@@ -84,7 +85,22 @@ def optimize(num_iterations):
         # It is easier to update it in each iteration because
         # we need this number several times in the following.
         total_iterations += 1
-        
+        # Switch the folder saved AI as iterations increase.
+        milestones = [1,1e4, 2e4, 5e4, 1e5, 2e5, 5e5, 1e6, 2e6, 5e6, 1e7, 2e7, 5e7, 1e8, 2e8, 5e8]
+        for key, milestone in enumerate(milestones):
+            if i != milestone:
+                continue
+            # test the accuracy of the AI
+            print ("======================")
+            print ("iters = {0}".format(milestone))
+            print_test_accuracy(show_confusion_matrix=True)
+            print ("======================")
+            # switch to next checkpoint
+            save_dir = 'AI_64_8_{0}/checkpoints_{1}/'.format(argv[1][:-4], milestones[key+1])
+            if not os.path.exists(save_dir):
+                os.makedirs(save_dir)
+            save_path = os.path.join(save_dir, 'best_validation')
+            break
         # Get a batch of training examples.
         # x_batch now holds a batch of images and
         # y_true_batch are the true labels for those images.
@@ -191,7 +207,7 @@ def plot_confusion_matrix(cls_pred):
     # Get the confusion matrix using sklearn.
     cm = confusion_matrix(y_true=cls_true,
                           y_pred=cls_pred)
-    
+
     # Print the confusion matrix as text.
     print(cm)
     '''
@@ -217,9 +233,11 @@ def print_test_accuracy(show_example_errors=False,
     # For all the images in the test-set,
     # calculate the predicted classes and whether they are correct.
     correct, cls_pred = predict_cls_test()
-    # save cls_pred and cls_true
+    
+    # save pred and true labels
     save_cls_pred(argv, time_stamp, cls_pred)
     save_cls_true(argv, time_stamp, data.test.cls)
+
     # Classification accuracy and the number of correct classifications.
     acc, num_correct = cls_accuracy(correct)
     
@@ -312,8 +330,6 @@ if __name__ == "__main__":
     VERBOSE = 0
     # measure times
     start_time = time.time()
-    time_stamp = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
-    print ("starting time: {0}".format(time_stamp))
     #-----------------------------------
     # Load Data
     images_name = argv[1]
@@ -324,7 +340,7 @@ if __name__ == "__main__":
     print("- Test-set:\t\t{}".format(len(data.test.labels)))
     print("- Validation-set:\t{}".format(len(data.validation.labels)))
     data.test.cls = np.argmax(data.test.labels, axis=1)
-    # save arrangement
+    # save the distribution
     if save_arrangement(argv, time_stamp, data, index):
         print ("index and data is saved.")
     #-----------------------------------
@@ -405,10 +421,6 @@ if __name__ == "__main__":
     validation_list = []
     improved_validation_list = []
     saver = tf.train.Saver()
-    save_dir = '{0}/checkpoint_AI_64_8_{1}'.format(time_stamp, argv[1][:-4])
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-    save_path = os.path.join(save_dir, 'best_validation')
     #-----------------------------------
     # Tensorflow run
     session = tf.Session()
@@ -422,7 +434,7 @@ if __name__ == "__main__":
     # Iteration-number for last improvement to validation accuracy.
     last_improvement = 0
     # Stop optimization if no improvement found in this many iterations.
-    require_improvement = 100000
+    require_improvement = 500000
     # Counter for total number of iterations performed so far.
     total_iterations = 0
     optimize(num_iterations=iters)
