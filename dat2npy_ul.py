@@ -30,13 +30,15 @@ Editor:
 update log
 20180123 version alpha 1
     The code is copy from dat2npy.py
+20180320 version alpha 2
+    1. add tracer to dat data set
 '''
 import tensorflow as tf
 import time
 import re           # this is used to apply multiple spliting
 import numpy as np
 from sys import argv
-
+from dat2npy import zero_filter
 # the def is used to read a list of data with the same class.
 def read_well_known_data(data_name):
     f = open(data_name, 'r')
@@ -61,11 +63,6 @@ def normalize(inp):
     h = len(inp)
     norm = np.abs(inp).sum(axis=1)
     outp = inp / norm.reshape(h,1)
-    outp.reshape(-1, data_width)
-    return outp
-
-def zero_filter(inp, maximun):
-    outp = np.array([row for row in inp if len(row) - np.count_nonzero(row) <= maximun])
     outp.reshape(-1, data_width)
     return outp
 
@@ -107,7 +104,9 @@ if __name__ == "__main__":
         data_n = normalize(data)
         # zero filter
         for i in xrange(data_width+1):
-            data_n_z = zero_filter(data_n, i)
+            data_n_z, ind_outp = zero_filter(data_name, data_n, i)
+            # save tracer
+            np.savetxt("{0}_row_MaxLoss{1}".format(data_name[:-8], i), ind_outp)
             print "MaxLoss = {0}, number of data = {1}".format(i, len(data_n_z))
             data_n_z_ul = upperlower(data_n_z)
             label_z = np.array([ind for x in range(len(data_n_z_ul)) ])

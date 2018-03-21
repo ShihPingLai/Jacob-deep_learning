@@ -35,6 +35,8 @@ update log
 20180306 version alpha 4
     1. no argv for data mod and label mod anymore, for replacement, the code will generate label with data process.
     2. now you can process a sequence of data with label in order.
+20180320 version alpha 5 
+    1. add a tracer to dat data set
 '''
 import tensorflow as tf
 import time
@@ -69,10 +71,15 @@ def normalize(inp):
     outp.reshape(-1, data_width)
     return outp
 
-def zero_filter(inp, maximun):
+def zero_filter(data_name, inp, maximun):
+    # data name means
     outp = np.array([row for row in inp if len(row) - np.count_nonzero(row) <= maximun])
+    # load index
+    ind_inp = np.loadtxt("{0}_row.dat".format(data_name[:-8]))
+    _filter= np.array([len(row) - np.count_nonzero(row) <= maximun for row in inp])
+    ind_outp = ind_inp[_filter]
     outp.reshape(-1, data_width)
-    return outp
+    return outp, ind_outp
 
 #--------------------------------------------
 # main code
@@ -100,7 +107,9 @@ if __name__ == "__main__":
         data_n = normalize(data)
         # zero filter
         for i in xrange(data_width+1):
-            data_n_z = zero_filter(data_n, i)
+            data_n_z, ind_outp= zero_filter(data_name, data_n, i)
+            # save tracer
+            np.savetxt("{0}_row_MaxLoss{1}".format(data_name[:-8], i), ind_outp)
             print "MaxLoss = {0}, number of data = {1}".format(i, len(data_n_z))
             label_z = np.array([ind for x in range(len(data_n_z)) ])
             label_z_f = [[0 for k in range(3)] for j in range(len(label_z))]
