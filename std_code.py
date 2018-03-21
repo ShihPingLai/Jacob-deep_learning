@@ -7,6 +7,11 @@ Usage:
 Editor:
     Jacob975
 
+##################################
+#   Python3                      #
+#   This code is made in python3 #
+##################################
+
 20170104
 ####################################
 update log
@@ -14,6 +19,8 @@ update log
     The code demo good
 20180204 version alpha 2
     Move to python3 instead of python2
+20180320 version alpha 3
+    1. add  a "This is python3" warning
 '''
 import tensorflow as tf
 import time
