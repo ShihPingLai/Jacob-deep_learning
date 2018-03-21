@@ -150,6 +150,12 @@ class DataSet(object):
       end = self._index_in_epoch
       return self._images[start:end], self._labels[start:end]
 
+class shuffled_index:
+    def __init__(self, train, validation, test):
+        self.train = train
+        self.validation = validation
+        self.test = test
+        return
 
 def read_data_sets(images_name,
                    labels_name,
@@ -188,9 +194,14 @@ def read_data_sets(images_name,
   train_images = images[validation_size + test_size:]
   train_labels = labels[validation_size + test_size:]
   options = dict(dtype=dtype, reshape=reshape, seed=seed)
-
+  # save shuffle index
+  train_shuffle = numpy.array(randomize[validation_size + test_size:])
+  validation_shuffle = numpy.array(randomize[:validation_size])
+  test_shuffle = numpy.array(randomize[validation_size:validation_size + test_size])
+  index = shuffled_index(train_shuffle, validation_shuffle, test_shuffle)
+  # save data and index
   train = DataSet(train_images, train_labels, **options)
   validation = DataSet(validation_images, validation_labels, **options)
   test = DataSet(test_images, test_labels, **options)
 
-  return base.Datasets(train=train, validation=validation, test=test)
+  return base.Datasets(train=train, validation=validation, test=test), index

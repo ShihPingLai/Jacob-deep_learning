@@ -28,3 +28,17 @@ TensorFlow-Tutorials/04_Save_Restore.ipynb
 TensorFlow-Tutorials/05_Ensemble_Learning.ipynb
 
 TensorFlow-Tutorials/06_CIFAR-10.ipynb
+
+# How to train AI
+
+Usage:
+    sed_04_64_8.py [source] [id]
+
+Result tree:
+
+[week, date. Month Year hh:mm] -------  test -------------   index              // tracer index
+                                    |-  training        |-   labels             // true label
+                                    |-  validation      |-   dataset            // data
+                                    |-  cls true of test                        // predicted label of test set
+                                    |-  cls pred of test                        // true label of test set
+                                    |-  checkpoint_AI_64_8_[file_name]          // this is AI
