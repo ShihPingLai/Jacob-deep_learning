@@ -29,6 +29,7 @@ import time
 from datetime import timedelta
 from sys import argv
 from help_func import plot_images
+from save_lib import save_pred_cls
 import astro_mnist
 import math
 import os
@@ -105,6 +106,10 @@ def print_test_accuracy(show_example_errors=False,
     # For all the images in the test-set,
     # calculate the predicted classes and whether they are correct.
     correct, cls_pred = predict_cls_test()
+    # save cls_pred and cls_true
+    save_cls_pred(argv, time_stamp, cls_pred)
+    save_cls_true(argv, time_stamp, data.test.cls)
+    
     # Classification accuracy and the number of correct classifications.
     acc, num_correct = cls_accuracy(correct)
     
@@ -273,16 +278,7 @@ if __name__ == "__main__":
     print ("batch_size = {0}".format(batch_size))
     # test the restored AI, show confusion matrix and example_errors
     print_test_accuracy(show_example_errors=False, show_confusion_matrix=False)
-    '''
-    # This part demo how to reload your parameters
-    init_variables()
-    print_test_accuracy()
-    saver.restore(sess=session, save_path=save_path)
-    print_test_accuracy(show_example_errors=True, show_confusion_matrix=True)
-    '''
-    # This has been commented out in case you want to modify and experiment
-    # with the Notebook without having to restart it.
-    # session.close()
+    session.close()
     #-----------------------------------
     # measuring time
     elapsed_time = time.time() - start_time
