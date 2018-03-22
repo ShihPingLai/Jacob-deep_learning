@@ -1,4 +1,4 @@
-# deep_learning
+# deep learning
 I study on how to apply deep_learning on astronomy.
 
 # preparation
@@ -34,11 +34,26 @@ TensorFlow-Tutorials/06_CIFAR-10.ipynb
 Usage:
     sed_04_64_8.py [source] [id]
 
-Result tree:
+# Result tree
 
-[week, date. Month Year hh:mm] -------  test -------------   index              // tracer index
-                                    |-  training        |-   labels             // true label
-                                    |-  validation      |-   dataset            // data
-                                    |-  cls true of test                        // predicted label of test set
-                                    |-  cls pred of test                        // true label of test set
-                                    |-  checkpoint_AI_64_8_[file_name]          // this is AI
++ `week, date. Month Year hh:mm`
+  + test
+    + index		// tracer index
+    + labels		// true label
+    + data set		// data
+  - training
+    + index             // tracer index
+    + labels            // true label
+    + data set          // data
+  - validation
+    + index             // tracer index
+    + labels            // true label
+    + data set          // data
+  + cls true of test                        // predicted label of test set
+  + cls pred of test                        // true label of test set
+  + checkpoint_AI_64_8_`file_name`          // this is AI
+
+# Tracer tree
+
+[Data selection]https://github.com/jacob975/deep_learning/blob/master/data_selection.png
+[Data tracer]https://github.com/jacob975/deep_learning/blob/master/data_tracer.png
