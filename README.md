@@ -17,7 +17,7 @@ The git you need
 1. TensorFlow-Tutorials
 
 # tutorial I have practiced
-```python
+```bash
 TensorFlow-Tutorials/01_Simple_Linear_Model.ipynb
 
 TensorFlow-Tutorials/02_Convolutional_Neural_Network.ipynb
