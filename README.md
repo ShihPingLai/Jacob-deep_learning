@@ -17,6 +17,7 @@ The git you need
 1. TensorFlow-Tutorials
 
 # tutorial I have practiced
+```python
 TensorFlow-Tutorials/01_Simple_Linear_Model.ipynb
 
 TensorFlow-Tutorials/02_Convolutional_Neural_Network.ipynb
@@ -28,11 +29,12 @@ TensorFlow-Tutorials/04_Save_Restore.ipynb
 TensorFlow-Tutorials/05_Ensemble_Learning.ipynb
 
 TensorFlow-Tutorials/06_CIFAR-10.ipynb
+```
 
 # How to train AI
 
 Usage:
-    sed_04_64_8.py [source] [id]
+```sed_04_64_8.py [source] [id]```
 
 # Result tree
 
@@ -55,6 +57,6 @@ Usage:
 
 # Tracer tree
 
-![Data selection](https://github.com/jacob975/deep_learning/blob/master/data_selection.png)
+![DataSelection](https://github.com/jacob975/deep_learning/data_selection.png)
 
-![Data tracer](https://github.com/jacob975/deep_learning/blob/master/data_tracer.png)
+![DataTracer](https://github.com/jacob975/deep_learning/data_tracer.png)
