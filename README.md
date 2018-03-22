@@ -55,6 +55,6 @@ Usage:
 
 # Tracer tree
 
-![Data selection]https://github.com/jacob975/deep_learning/blob/master/data_selection.png
+![Data selection](https://github.com/jacob975/deep_learning/blob/master/data_selection.png)
 
-![Data tracer]https://github.com/jacob975/deep_learning/blob/master/data_tracer.png
+![Data tracer](https://github.com/jacob975/deep_learning/blob/master/data_tracer.png)
