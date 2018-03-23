@@ -545,29 +545,38 @@ if __name__ == "__main__":
     print("- Test-set:\t\t{}".format(len(images_test)))
     # Data Dimensions
     img_size_cropped = 24
+    #----------------------------------
     # Get the first images from the test-set.
-    images = images_test[0:9]
-    
+    images = images_test[0:9] 
     # Get the true classes for those images.
     cls_true = cls_test[0:9]
-    
     # Plot the images and labels using our helper-function above.
     plot_images(images=images, cls_true=cls_true, smooth=False)
     plot_images(images=images, cls_true=cls_true, smooth=True)
     #-----------------------------------
     # TensorFlow Graph
+    # input
     x = tf.placeholder(tf.float32, shape=[None, img_size, img_size, num_channels], name='x')
+    # true label in vector style
     y_true = tf.placeholder(tf.float32, shape=[None, num_classes], name='y_true')
+    # true label
     y_true_cls = tf.argmax(y_true, dimension=1)
+    # distorted input imaged
     distorted_images = pre_process(images=x, training=True)
+    # this is a tensorflow variable saving how many iteration so far.
     global_step = tf.Variable(initial_value=0, name='global_step', trainable=False)
+    # get loss from a neural network
     _, loss = create_network(training=True)
+    # choose Adam as optimizer
     optimizer = tf.train.AdamOptimizer(learning_rate=1e-4).minimize(loss, global_step=global_step)
+    # get y_pred vector from a neural network
     y_pred, _ = create_network(training=False)
+    # convert y_pred vector into y_pred label
     y_pred_cls = tf.argmax(y_pred, dimension=1)
+    # find accuracy
     correct_prediction = tf.equal(y_pred_cls, y_true_cls)
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-    # Saver
+    # Initialize saver
     saver = tf.train.Saver()
     # Get weight
     weights_conv1 = get_weights_variable(layer_name='layer_conv1')
@@ -585,13 +594,10 @@ if __name__ == "__main__":
     save_path = os.path.join(save_dir, 'cifar10_cnn')
     try:
         print("Trying to restore last checkpoint ...")
-    
         # Use TensorFlow to find the latest checkpoint - if any.
         last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=save_dir)
-    
         # Try and load the data in the checkpoint.
         saver.restore(session, save_path=last_chk_path)
-    
         # If we get to this point, the checkpoint was successfully loaded.
         print("Restored checkpoint from:", last_chk_path)
     except:
@@ -603,27 +609,26 @@ if __name__ == "__main__":
     img, cls = get_test_image(16)
     plot_distorted_image(img, cls)
     # Perform optimization
-    if False:
+    if True:
         optimize(num_iterations=1000)
     # Result
-    print_test_accuracy(show_example_errors=True,
-                        show_confusion_matrix=True)
+    print_test_accuracy(show_example_errors=True, show_confusion_matrix=True)
+    # print the weight after training
     plot_conv_weights(weights=weights_conv1, input_channel=0)
     plot_conv_weights(weights=weights_conv2, input_channel=1)
     img, cls = get_test_image(16)
     plot_image(img)
+    # print the layer with some image
     plot_layer_output(output_conv1, image=img)
     plot_layer_output(output_conv2, image=img)
-    label_pred, cls_pred = session.run([y_pred, y_pred_cls],
-                                       feed_dict={x: [img]})
+    label_pred, cls_pred = session.run([y_pred, y_pred_cls],feed_dict={x: [img]})
     # Set the rounding options for numpy.
     np.set_printoptions(precision=3, suppress=True)
-    
     # Print the predicted label.
     print(label_pred[0])
     # This has been commented out in case you want to modify and experiment
     # with the Notebook without having to restart it.
-    # session.close()
+    session.close()
     #-----------------------------------
     # measuring time
     elapsed_time = time.time() - start_time
