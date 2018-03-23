@@ -1,8 +1,0 @@
-#!/bin/csh
-
-set i=1
-while($i <= 5)
-	echo $i
-        head -8 MaxZero16_tested_by_Evan_et_al_MaxZero11_$i | tail -1
-	@ i++
-end
