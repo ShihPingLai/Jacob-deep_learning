@@ -14,7 +14,7 @@ Usage:
 
 Result tree:
 
-[week, date. Month Year hh:mm] -------  test -------------   index              // tracer index
+[week, date. Month Year hh:mm] -------  test -------------   tracer              // tracer index
                                     |-  training        |-   labels             // true label
                                     |-  validation      |-   dataset            // data
                                     |-  cls true of test                        // predicted label of test set
@@ -318,15 +318,15 @@ if __name__ == "__main__":
     # Load Data
     images_name = argv[1]
     labels_name = argv[2]
-    data, index = astro_mnist.read_data_sets(images_name, labels_name)
+    data, tracer = astro_mnist.read_data_sets(images_name, labels_name)
     print("Size of:")
     print("- Training-set:\t\t{}".format(len(data.train.labels)))
     print("- Test-set:\t\t{}".format(len(data.test.labels)))
     print("- Validation-set:\t{}".format(len(data.validation.labels)))
     data.test.cls = np.argmax(data.test.labels, axis=1)
     # save arrangement
-    if save_arrangement(argv, time_stamp, data, index):
-        print ("index and data is saved.")
+    if save_arrangement(argv, time_stamp, data, tracer):
+        print ("tracer and data is saved.")
     #-----------------------------------
     # Data dimension
     # We know that from the length of a data. 
@@ -359,14 +359,6 @@ if __name__ == "__main__":
     # Get the true classes for those images.
     data.test.cls = np.argmax(data.test.labels, axis=1)
     data.validation.cls = np.argmax(data.validation.labels, axis=1)
-    '''
-    # Get the first images from the test-set.
-    images = data.test.images[0:9]
-    # Get the true classes for those images.
-    cls_true = data.test.cls[0:9]
-    # Plot the images and labels using our helper-function above.
-    if VERBOSE> 2: plot_images(images=images, cls_true=cls_true)
-    '''
     #-----------------------------------
     # Tensorflow Graph
     x = tf.placeholder(tf.float32, shape=[None, img_size_flat], name='x')

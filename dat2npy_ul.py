@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 '''
 Abstract:
     This is a program to convert .dat files to npy files
@@ -32,6 +32,8 @@ update log
     The code is copy from dat2npy.py
 20180320 version alpha 2
     1. add tracer to dat data set
+20180322 version alpha 3
+    1. rename tracer
 '''
 import tensorflow as tf
 import time
@@ -70,6 +72,7 @@ def normalize(inp):
 # [S1, S2, S3, ..., S8, E1, E2, E3, ..., E8]
 # output data format:
 # [Si+E1, S2+E2, S3+E3, ..., S8+E8, S1-E1, S2-E2, ..., S8-E8]
+
 def upperlower(inp):
     sig = inp[:,:8]
     err = inp[:,8:]
@@ -94,6 +97,7 @@ if __name__ == "__main__":
     # Load data
     sum_data = [[] for x in range(data_width+1)]
     sum_label = [[] for x in range(data_width+1)]
+    sum_tracer = [[] for x in range(data_width+1)]
     for ind, data_name in enumerate(data_name_list, start = 0):
         print "##############################"
         print "data name = {0}".format(data_name)
@@ -104,9 +108,8 @@ if __name__ == "__main__":
         data_n = normalize(data)
         # zero filter
         for i in xrange(data_width+1):
-            data_n_z, ind_outp = zero_filter(data_name, data_n, i)
+            data_n_z, tracer_outp = zero_filter(data_name, data_n, i)
             # save tracer
-            np.savetxt("{0}_row_MaxLoss{1}".format(data_name[:-8], i), ind_outp)
             print "MaxLoss = {0}, number of data = {1}".format(i, len(data_n_z))
             data_n_z_ul = upperlower(data_n_z)
             label_z = np.array([ind for x in range(len(data_n_z_ul)) ])
@@ -116,9 +119,10 @@ if __name__ == "__main__":
             # stack them
             sum_data[i] = np.append(sum_data[i], data_n_z_ul)
             sum_label[i] = np.append(sum_label[i], label_z_f)
+            sum_tracer[i] = np.append(sum_tracer[i], tracer_outp)
     # save data
     print "###############################"
-    print "save data"
+    print "save data, label, and tracer"
     for i in xrange(data_width+1):
         sum_data[i] = np.reshape(sum_data[i], (-1, data_width))
         sum_label[i] = np.reshape(sum_label[i], (-1, 3))
@@ -127,7 +131,8 @@ if __name__ == "__main__":
         np.savetxt("source_sed_MaxLoss{0}.txt".format(i), sum_data[i])
         np.save("source_id_MaxLoss{0}.npy".format(i), sum_label[i])
         np.savetxt("source_id_MaxLoss{0}.txt".format(i), sum_label[i])
-    
+        np.savetxt("source_tracer_MaxLoss{0}.txt".format(i), sum_tracer[i])
+        np.save("source_tracer_MaxLoss{0}.npy".format(i), sum_tracer[i])
     #-----------------------------------
     # measuring time
     elapsed_time = time.time() - start_time

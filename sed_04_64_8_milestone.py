@@ -14,7 +14,7 @@ Usage:
 
 Result tree:
 
-[week, date. Month Year hh:mm] -------  test -------------   index              // tracer index
+[week, date. Month Year hh:mm] -------  test -------------   tracer             // tracer index
                                     |-  training        |-   labels             // true label
                                     |-  validation      |-   dataset            // data
                                     |-  cls true of test                        // predicted label of test set
@@ -334,15 +334,15 @@ if __name__ == "__main__":
     # Load Data
     images_name = argv[1]
     labels_name = argv[2]
-    data, index = astro_mnist.read_data_sets(images_name, labels_name)
+    data, tracer = astro_mnist.read_data_sets(images_name, labels_name)
     print("Size of:")
     print("- Training-set:\t\t{}".format(len(data.train.labels)))
     print("- Test-set:\t\t{}".format(len(data.test.labels)))
     print("- Validation-set:\t{}".format(len(data.validation.labels)))
     data.test.cls = np.argmax(data.test.labels, axis=1)
     # save the distribution
-    if save_arrangement(argv, time_stamp, data, index):
-        print ("index and data is saved.")
+    if save_arrangement(argv, time_stamp, data, tracer):
+        print ("tracer and data is saved.")
     #-----------------------------------
     # Data dimension
     # We know that from the length of a data. 

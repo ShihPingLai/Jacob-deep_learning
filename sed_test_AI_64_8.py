@@ -207,12 +207,15 @@ if __name__ == "__main__":
     images_name = argv[1]
     labels_name = argv[2]
     save_dir = argv[3]
-    data = astro_mnist.read_data_sets(images_name, labels_name, train_weight = 0, validation_weight = 0, test_weight = 1)
+    data, tracer = astro_mnist.read_data_sets(images_name, labels_name, train_weight = 0, validation_weight = 0, test_weight = 1)
     print("Size of:")
     print("- Training-set:\t\t{}".format(len(data.train.labels)))
     print("- Test-set:\t\t{}".format(len(data.test.labels)))
     print("- Validation-set:\t{}".format(len(data.validation.labels)))
     data.test.cls = np.argmax(data.test.labels, axis=1)
+    # save arrangement
+    if save_arrangement(argv, time_stamp, data, tracer):
+        print ("tracer and data is saved.")
     #-----------------------------------
     # Data dimension
     # We know that MNIST images are 28 pixels in each dimension.
