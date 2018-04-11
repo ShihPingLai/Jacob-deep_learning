@@ -178,12 +178,12 @@ def read_data_sets(images_name,
   if not 0 <= validation_size <= len(images):
     raise ValueError('Validation size should be between 0 and {}. Received: {}.'.format(len(images), validation_size))
   '''
-  # shuffle
+  # shuffle the data
   randomize = numpy.arange(len(images))
   numpy.random.shuffle(randomize)
   images = images[randomize]
   labels = labels[randomize]
-  # distribute
+  # distribute data into three dataset
   total_weight = train_weight + validation_weight + test_weight
   train_size = int(len(images) * train_weight/total_weight)
   validation_size = int(len(images) * validation_weight/total_weight)
@@ -195,12 +195,12 @@ def read_data_sets(images_name,
   train_images = images[validation_size + test_size:]
   train_labels = labels[validation_size + test_size:]
   options = dict(dtype=dtype, reshape=reshape, seed=seed)
-  # save shuffle tracer
+  # generate shuffle tracer
   train_shuffle = numpy.array(randomize[validation_size + test_size:])
   validation_shuffle = numpy.array(randomize[:validation_size])
   test_shuffle = numpy.array(randomize[validation_size:validation_size + test_size])
   tracer = shuffled_tracer(train_shuffle, validation_shuffle, test_shuffle)
-  # save data and index
+  # generate data and index
   train = DataSet(train_images, train_labels, **options)
   validation = DataSet(validation_images, validation_labels, **options)
   test = DataSet(test_images, test_labels, **options)
