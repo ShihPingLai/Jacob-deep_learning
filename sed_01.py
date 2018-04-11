@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 '''
 License (MIT)
 Copyright (c) 2016 by Magnus Erik Hvass Pedersen

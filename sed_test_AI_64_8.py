@@ -3,7 +3,7 @@
 Abstract:
     This is a code for test AI with given sed data.
 Usage:
-    sed_04.py [source] [id] [AI]
+    sed_test_AI_64_8.py [source] [id] [AI]
 Editor and Practicer:
     Jacob975
 
@@ -26,10 +26,10 @@ import tensorflow as tf
 import numpy as np
 from sklearn.metrics import confusion_matrix
 import time
-from datetime import timedelta
+from datetime import datetime, timedelta
 from sys import argv
 from help_func import plot_images
-from save_lib import save_pred_cls
+from save_lib import save_cls_pred, save_cls_true, save_arrangement
 import astro_mnist
 import math
 import os
@@ -84,7 +84,7 @@ def plot_confusion_matrix(cls_pred):
 
     # Print the confusion matrix as text.
     print(cm)
-
+    '''
     # Plot the confusion matrix as an image.
     plt.matshow(cm)
 
@@ -99,6 +99,7 @@ def plot_confusion_matrix(cls_pred):
     # Ensure the plot is shown correctly with multiple plots
     # in a single Notebook cell.
     plt.show()
+    '''
 
 def print_test_accuracy(show_example_errors=False,
                         show_confusion_matrix=False):
@@ -202,6 +203,7 @@ if __name__ == "__main__":
     VERBOSE = 0
     # measure times
     start_time = time.time()
+    time_stamp = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
     #-----------------------------------
     # Load Data
     images_name = argv[1]
@@ -280,7 +282,7 @@ if __name__ == "__main__":
     batch_size = 512
     print ("batch_size = {0}".format(batch_size))
     # test the restored AI, show confusion matrix and example_errors
-    print_test_accuracy(show_example_errors=False, show_confusion_matrix=False)
+    print_test_accuracy(show_example_errors=False, show_confusion_matrix=True)
     session.close()
     #-----------------------------------
     # measuring time
