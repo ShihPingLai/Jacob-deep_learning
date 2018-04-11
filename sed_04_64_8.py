@@ -419,7 +419,7 @@ if __name__ == "__main__":
     total_iterations = 0
     optimize(num_iterations=iters)
     print ( "final_learning_rate = {0}".format(session.run(learning_rate)))
-    print_test_accuracy(show_example_errors=True, show_confusion_matrix=True)
+    print_test_accuracy(show_example_errors=False, show_confusion_matrix=True)
     session.close()
     #-----------------------------------
     # measuring time
