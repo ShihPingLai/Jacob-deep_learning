@@ -36,20 +36,20 @@ if __name__ == "__main__":
     cls_pred = None
     cls_true = None
     sub_name = "source_sed_MaxLoss16"
-    timestamp = None
+    time_stamp = None
     # load argv
     if len(argv) != 2:
         print ("Error!\nUsage: test_tracer.py [directory]")
         exit()
-    timestamp = argv[1]
+    time_stamp = argv[1]
     # load tracer
-    failure, data, tracer = load_lib.load_arrangement(sub_name, timestamp)
+    failure, data, tracer = load_lib.load_arrangement(sub_name, time_stamp)
     if not failure:
         print ("load data and tracer success")
-    failure, cls_pred = load_lib.load_cls_pred(sub_name, timestamp)
+    failure, cls_pred = load_lib.load_cls_pred(sub_name, time_stamp)
     if not failure:
         print ("load cls_pred success")
-    failure, cls_true = load_lib.load_cls_true(sub_name, timestamp)
+    failure, cls_true = load_lib.load_cls_true(sub_name, time_stamp)
     if not failure:
         print ("load cls_true success")
     # test
