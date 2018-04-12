@@ -3,7 +3,7 @@
 Abstract:
     This is a code for test AI with given sed data.
 Usage:
-    sed_test_AI_64_8.py [source] [id] [AI]
+    sed_test_AI_64_8.py [source] [id] [timestamp] [AI]
 Editor and Practicer:
     Jacob975
 
@@ -19,6 +19,8 @@ update log
     the code work well.
     20180226 version alpha 2:
     the AI can be choosed.
+    20180412 version alpha 3:
+    1. make timestamp a argument
 '''
 from IPython.display import Image       # Used to create flowcart
 import matplotlib.pyplot as plt
@@ -203,12 +205,12 @@ if __name__ == "__main__":
     VERBOSE = 0
     # measure times
     start_time = time.time()
-    time_stamp = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
+    time_stamp = argv[3]
     #-----------------------------------
     # Load Data
     images_name = argv[1]
     labels_name = argv[2]
-    save_dir = argv[3]
+    save_dir = argv[4]
     data, tracer = astro_mnist.read_data_sets(images_name, labels_name, train_weight = 0, validation_weight = 0, test_weight = 1)
     print("Size of:")
     print("- Training-set:\t\t{}".format(len(data.train.labels)))

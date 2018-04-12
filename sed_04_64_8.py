@@ -10,11 +10,11 @@ Abstract:
     This is a code for train AI to identify YSO from SED data
     with 64 neurals per layer, 8 layers.
 Usage:
-    sed_04_64_8.py [source] [id]
+    sed_04_64_8.py [source] [id] [time_stamp]
 
 Result tree:
 
-[week, date. Month Year hh:mm] -------  test -------------   tracer              // tracer index
+[yyyy-mm-dd hh:mm:ss+08:00] ---------  test -------------   tracer              // tracer index
                                     |-  training        |-   labels             // true label
                                     |-  validation      |-   dataset            // data
                                     |-  cls true of test                        // predicted label of test set
@@ -312,7 +312,7 @@ if __name__ == "__main__":
     VERBOSE = 0
     # measure times
     start_time = time.time()
-    time_stamp = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
+    time_stamp = argv[3]
     print ("starting time: {0}".format(time_stamp))
     #-----------------------------------
     # Load Data
