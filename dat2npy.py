@@ -60,8 +60,8 @@ def read_well_known_data(data_name):
         # clean the empty element
         row_c = [x for x in row if x != ""]
         if len(row_c) != data_width:
-            print line[:-1]
-            print "the row {0} is wrong.\n".format(ind)
+            print (line[:-1])
+            print ("the row {0} is wrong.\n".format(ind))
             continue
         data.append(row_c)
     f.close()
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     #----------------------------------
     # read argv
     data_name_list = argv[1:]
-    print "data to be processed: {0}".format(data_name_list)
+    print ("data to be processed: {0}".format(data_name_list))
     # how many element in a data vector
     data_width = 16
     #-----------------------------------
@@ -104,32 +104,32 @@ if __name__ == "__main__":
     sum_label = [[] for x in range(data_width+1)]
     sum_tracer = [[] for x in range(data_width+1)]
     for ind, data_name in enumerate(data_name_list, start = 0):
-        print "##############################"
-        print "data name = {0}".format(data_name)
-        print "label = {0}".format(ind)
+        print ("##############################")
+        print ("data name = {0}".format(data_name))
+        print ("label = {0}".format(ind))
         # convert data from string to float
         str_data = read_well_known_data(data_name)
         data = np.array(str_data, dtype = float)
         data_n = normalize(data)
         # zero filter
-        for i in xrange(data_width+1):
+        for i in range(data_width+1):
             data_n_z, tracer_outp= zero_filter(data_name, data_n, i)
-            print "MaxLoss = {0}, number of data = {1}".format(i, len(data_n_z))
+            print ("MaxLoss = {0}, number of data = {1}".format(i, len(data_n_z)))
             label_z = np.array([ind for x in range(len(data_n_z)) ])
             label_z_f = [[0 for k in range(3)] for j in range(len(label_z))]
-            for u in xrange(len(label_z_f)):
+            for u in range(len(label_z_f)):
                 label_z_f[u][int(label_z[u])] = 1
             # stack them
             sum_data[i] = np.append(sum_data[i], data_n_z)
             sum_label[i] = np.append(sum_label[i], label_z_f)
             sum_tracer[i] = np.append(sum_tracer[i], tracer_outp)
     # save data
-    print "###############################"
-    print "save data, label, and tracer"
-    for i in xrange(data_width+1):
+    print ("###############################")
+    print ("save data, label, and tracer")
+    for i in range(data_width+1):
         sum_data[i] = np.reshape(sum_data[i], (-1, data_width))
         sum_label[i] = np.reshape(sum_label[i], (-1, 3))
-        print "number of data with MaxLoss {0} = {1}".format(i, len(sum_data[i]))
+        print ("number of data with MaxLoss {0} = {1}".format(i, len(sum_data[i])))
         np.save("source_sed_MaxLoss{0}.npy".format(i), sum_data[i])
         np.savetxt("source_sed_MaxLoss{0}.txt".format(i), sum_data[i])
         np.save("source_id_MaxLoss{0}.npy".format(i), sum_label[i])
@@ -139,4 +139,4 @@ if __name__ == "__main__":
     #-----------------------------------
     # measuring time
     elapsed_time = time.time() - start_time
-    print "Exiting Main Program, spending ", elapsed_time, "seconds."
+    print ("Exiting Main Program, spending ", elapsed_time, "seconds.")
