@@ -17,7 +17,11 @@ Editor:
 update log
 
 20180411 version alpha 1:
-    1. The library work
+    1. The library work...no
+
+20180412 version alpha 2:
+    1. It is hard to create pointer in python, so I back to call by value
+    2. add a func to print confusion matrix
 '''
 import tensorflow as tf
 import time
@@ -35,8 +39,6 @@ from astro_mnist import DataSet, shuffled_tracer
 # This is used to load data, label, and tracer
 def load_arrangement(sub_name, 
                     time_stamp, 
-                    data, 
-                    tracer,
                     reshape=False,
                     dtype=dtypes.float32,
                     seed=None,
@@ -48,7 +50,7 @@ def load_arrangement(sub_name,
     # create folder
     if not os.path.exists(time_stamp):
         print("Directory not found")
-        return 1
+        return 1, None
     # if directory is not null, load data, labels and tracers
     try:
         train_tracer    = np.load("{0}/training_tracer_{1}.npy".format(time_stamp, sub_name))
@@ -62,7 +64,7 @@ def load_arrangement(sub_name,
         test_labels     = np.load("{0}/test_labels_{1}.npy".format(time_stamp, sub_name))
     except:
         print("data or label or tracer aren't completed")
-        return 1
+        return 1, None, None
     options = dict(dtype=dtype, reshape=reshape, seed=seed)
     # generate tracer
     tracer = shuffled_tracer(train_tracer, valid_tracer, test_tracer)
@@ -71,10 +73,10 @@ def load_arrangement(sub_name,
     validation = DataSet(valid_data, valid_labels, **options)
     test = DataSet(test_data, test_labels, **options)
     data = base.Datasets(train=train, validation=validation, test=test)
-    return 0
+    return 0, data, tracer
 
 # This is used to loading pred label
-def load_cls_pred(sub_name, time_stamp, cls_pred):
+def load_cls_pred(sub_name, time_stamp):
     # time_stamp is used to create a uniq folder
     # sub_name is used to denote filename
     # cls_pred is predicted label
@@ -82,11 +84,11 @@ def load_cls_pred(sub_name, time_stamp, cls_pred):
         cls_pred = np.load("{0}/test_cls_pred_{1}.npy".format(time_stamp, sub_name))
     except:
         print("test_cls_pred not found")
-        return 1
-    return 0
+        return 1, None
+    return 0, cls_pred
 
 # THis is used to loading true label
-def load_cls_true(sub_name, time_stamp, cls_true):
+def load_cls_true(sub_name, time_stamp):
     # time_stamp is used to create a uniq folder
     # sub_name is used to denote filename
     # cls_pred is true label
@@ -94,5 +96,13 @@ def load_cls_true(sub_name, time_stamp, cls_true):
         cls_true = np.load("{0}/test_cls_true_{1}.npy".format(time_stamp, sub_name))
     except:
         print ("test_cls_true not found")
-        return 1
-    return 0
+        return 1, None
+    return 0, cls_true
+
+# generate confusion matrix with given cls_true and cls_pred
+def plot_confusion_matrix(cls_true, cls_pred):
+    from sklearn.metrics import confusion_matrix
+    cm = confusion_matrix(y_true=cls_true,
+                          y_pred=cls_pred)
+    print(cm)
+    return 0, cm
