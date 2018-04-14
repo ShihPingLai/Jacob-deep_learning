@@ -24,7 +24,7 @@ do
     # ${each::-1} means take $each but the last latter. 
     FULL_AI_NAME=${each::-1}
     AI_NAME=${FULL_AI_NAME##*/}
-    echo "${AI_NAME}"
+    echo "AI under test: ${AI_NAME}"
 
     # create a directory to save result of testing
     mkdir "AI_${AI_NAME}_test_on_${keyword}"
