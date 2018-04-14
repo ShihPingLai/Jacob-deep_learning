@@ -40,7 +40,11 @@ import time
 import re           # this is used to apply multiple spliting
 import numpy as np
 from sys import argv
-from dat2npy import zero_filter
+from dat2npy import no_observation_filter
+
+# how many element in a data vector
+data_width = 16
+
 # the def is used to read a list of data with the same class.
 def read_well_known_data(data_name):
     f = open(data_name, 'r')
@@ -91,13 +95,11 @@ if __name__ == "__main__":
     # read argv
     data_name_list = argv[1:]
     print ("data to be processed: {0}".format(data_name_list))
-    # how many element in a data vector
-    data_width = 16
     #-----------------------------------
     # Load data
-    sum_data = [[] for x in range(data_width+1)]
-    sum_label = [[] for x in range(data_width+1)]
-    sum_tracer = [[] for x in range(data_width+1)]
+    sum_data = [[] for x in range(data_width)]
+    sum_label = [[] for x in range(data_width)]
+    sum_tracer = [[] for x in range(data_width)]
     for ind, data_name in enumerate(data_name_list, start = 0):
         print ("##############################")
         print ("data name = {0}".format(data_name))
@@ -105,10 +107,10 @@ if __name__ == "__main__":
         # convert data from string to float
         str_data = read_well_known_data(data_name)
         data = np.array(str_data, dtype = float)
-        data_n = normalize(data)
         # zero filter
-        for i in range(data_width+1):
-            data_n_z, tracer_outp = zero_filter(data_name, data_n, i)
+        for i in range(data_width):
+            data_z, tracer_outp = no_observation_filter(data_name, data, i)
+            data_n_z = normalize(data_z)
             # save tracer
             print ("MaxLoss = {0}, number of data = {1}".format(i, len(data_n_z)))
             data_n_z_ul = upperlower(data_n_z)
@@ -123,7 +125,7 @@ if __name__ == "__main__":
     # save data
     print ("###############################")
     print ("save data, label, and tracer")
-    for i in range(data_width+1):
+    for i in range(data_width):
         sum_data[i] = np.reshape(sum_data[i], (-1, data_width))
         sum_label[i] = np.reshape(sum_label[i], (-1, 3))
         print ("number of data with MaxLoss {0} = {1}".format(i, len(sum_data[i])))
