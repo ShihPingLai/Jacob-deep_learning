@@ -69,6 +69,7 @@ def normalize(inp):
     h = len(inp)
     norm = np.abs(inp).sum(axis=1)
     outp = inp / norm.reshape(h,1)
+    outp[outp < 0 ]= -9.99e+02
     outp.reshape(-1, data_width)
     return outp
 
