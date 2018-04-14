@@ -210,7 +210,7 @@ if __name__ == "__main__":
     # Load Data
     images_name = argv[1]
     labels_name = argv[2]
-    save_dir = argv[4]
+    AI_saved_dir = argv[4]
     data, tracer = astro_mnist.read_data_sets(images_name, labels_name, train_weight = 0, validation_weight = 0, test_weight = 1)
     print("Size of:")
     print("- Training-set:\t\t{}".format(len(data.train.labels)))
@@ -269,10 +269,10 @@ if __name__ == "__main__":
     #-----------------------------------
     # Saver
     saver = tf.train.Saver()
-    print ("AI:{0}".format(save_dir))
-    if not os.path.exists(save_dir):
+    print ("AI:{0}".format(AI_saved_dir))
+    if not os.path.exists(AI_saved_dir):
         print ("No AI can be restore, please check folder ./checkpoints")
-    save_path = os.path.join(save_dir, 'best_validation')
+    save_path = os.path.join(AI_saved_dir, 'best_validation')
     #-----------------------------------
     # Tensorflow run
     session = tf.Session()

@@ -36,7 +36,7 @@ from tensorflow.python.platform import gfile
 
 from astro_mnist import DataSet, shuffled_tracer
 
-# This is used to load data, label, and tracer
+# This is used to load data, label, and shuffle tracer
 def load_arrangement(sub_name, 
                     time_stamp, 
                     reshape=False,
@@ -74,6 +74,12 @@ def load_arrangement(sub_name,
     test = DataSet(test_data, test_labels, **options)
     data = base.Datasets(train=train, validation=validation, test=test)
     return 0, data, tracer
+
+def load_dat_tracer():
+    return 0, dat_tracer
+
+def load_table_tracer():
+    return 0, table_tracer
 
 # This is used to loading pred label
 def load_cls_pred(sub_name, time_stamp):
