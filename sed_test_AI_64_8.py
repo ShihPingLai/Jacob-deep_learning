@@ -21,6 +21,8 @@ update log
     the AI can be choosed.
     20180412 version alpha 3:
     1. make timestamp a argument
+    20180414 version alpha 4:
+    1. add funcs for print precision and recall-rate.
 '''
 from IPython.display import Image       # Used to create flowcart
 import matplotlib.pyplot as plt
@@ -32,6 +34,7 @@ from datetime import datetime, timedelta
 from sys import argv
 from help_func import plot_images
 from save_lib import save_cls_pred, save_cls_true, save_arrangement
+from load_lib import print_precision, print_recall_rate
 import astro_mnist
 import math
 import os
@@ -83,9 +86,11 @@ def plot_confusion_matrix(cls_pred):
     # Get the confusion matrix using sklearn.
     cm = confusion_matrix(y_true=cls_true,
                           y_pred=cls_pred)
-
+    
     # Print the confusion matrix as text.
     print(cm)
+    print_precision(y_true = cls_true, y_pred = cls_pred)
+    print_recall_rate(y_true = cls_true, y_pred = cls_pred)
     '''
     # Plot the confusion matrix as an image.
     plt.matshow(cm)
@@ -276,9 +281,11 @@ if __name__ == "__main__":
     #-----------------------------------
     # Tensorflow run
     session = tf.Session()
+    '''
     def init_variables():
         session.run(tf.global_variables_initializer())
     init_variables()
+    '''
     # restore previous weight
     saver.restore(sess=session, save_path=save_path)
     batch_size = 512

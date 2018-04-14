@@ -22,6 +22,8 @@ update log
 20180412 version alpha 2:
     1. It is hard to create pointer in python, so I back to call by value
     2. add a func to print confusion matrix
+20180414 version alpha 3:
+    1. add funcs for print precision and recall-rate.
 '''
 import tensorflow as tf
 import time
@@ -112,3 +114,23 @@ def plot_confusion_matrix(cls_true, cls_pred):
                           y_pred=cls_pred)
     print(cm)
     return 0, cm
+
+def print_precision(y_true, y_pred):
+    print ("### precision ###")
+    objects = ['star', 'galaxy', 'yso']
+    for label in range(3):
+        denominator = np.where(y_pred == label)
+        numerator = np.where((y_pred == label) & (y_true == label))
+        precision = len(numerator[0])/len(denominator[0])
+        print("precision for predict {0} is : {1} ({2} /{3} )".format(objects[label], precision, len(numerator[0]), len(denominator[0])))
+    return
+
+def print_recall_rate(y_true, y_pred):
+    print ("### recall-rate ###")
+    objects = ['star', 'galaxy', 'yso']
+    for label in range(3):
+        denominator = np.where(y_true == label)
+        numerator = np.where((y_pred == label) & (y_true == label))
+        precision = len(numerator[0])/len(denominator[0])
+        print("recall-rate for true {0} is : {1} ({2} /{3} )".format(objects[label], precision, len(numerator[0]), len(denominator[0])))
+    return
