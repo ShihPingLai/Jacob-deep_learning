@@ -7,8 +7,8 @@
 
 if [ "$#" -ne 2 ]; then
     echo "Illegal number of parameters"
-    echo "Usage:    ${0} [key word] [number of iterations]"
-    echo "Example : ${0} MaxLoss15 5"
+    echo "Usage:    ${0##*/} [key word] [number of iterations]"
+    echo "Example : ${0##*/} MaxLoss15 5"
     exit 1
 fi
 
