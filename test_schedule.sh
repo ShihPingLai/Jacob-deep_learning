@@ -24,12 +24,13 @@ do
     # ${each::-1} means take $each but the last latter. 
     FULL_AI_NAME=${each::-1}
     AI_NAME=${FULL_AI_NAME##*/}
+    echo "##############"
     echo "AI under test: ${AI_NAME}"
 
     # create a directory to save result of testing
-    mkdir "AI_${AI_NAME}_test_on_${keyword}"
+    mkdir -p "AI_${AI_NAME}_test_on_${keyword}"
     sed_test_AI_64_8.py source_sed_${keyword}.npy source_id_${keyword}.npy "AI_${AI_NAME}_test_on_${keyword}"\
-                        "${each}checkpoint_AI_64_8_source_sed_MaxLoss15" \
+                        "${each}checkpoint_AI_64_8_source_sed_${keyword}" \
                         > "AI_${AI_NAME}_test_on_${keyword}/result_of_AI_test"
 done
 exit 0
