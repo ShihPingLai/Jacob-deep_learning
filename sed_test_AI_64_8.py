@@ -115,8 +115,8 @@ def print_test_accuracy(show_example_errors=False,
     # calculate the predicted classes and whether they are correct.
     correct, cls_pred = predict_cls_test()
     # save cls_pred and cls_true
-    save_cls_pred(argv, time_stamp, cls_pred)
-    save_cls_true(argv, time_stamp, data.test.cls)
+    save_cls_pred(argv, directory, cls_pred)
+    save_cls_true(argv, directory, data.test.cls)
     
     # Classification accuracy and the number of correct classifications.
     acc, num_correct = cls_accuracy(correct)
@@ -210,7 +210,7 @@ if __name__ == "__main__":
     VERBOSE = 0
     # measure times
     start_time = time.time()
-    time_stamp = argv[3]
+    directory = argv[3]
     #-----------------------------------
     # Load Data
     images_name = argv[1]
@@ -223,7 +223,7 @@ if __name__ == "__main__":
     print("- Validation-set:\t{}".format(len(data.validation.labels)))
     data.test.cls = np.argmax(data.test.labels, axis=1)
     # save arrangement
-    if save_arrangement(argv, time_stamp, data, tracer):
+    if save_arrangement(argv, directory, data, tracer):
         print ("tracer and data is saved.")
     #-----------------------------------
     # Data dimension

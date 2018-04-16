@@ -3,7 +3,9 @@
 Abstract:
     This is a program to demo how to trace a datum 
 Usage:
-    test_trace.py
+    test_trace.py [DIR] [keyword]
+Example:
+    test_tracer.py . MaxLoss15
 Editor:
     Jacob975
 
@@ -16,7 +18,7 @@ Editor:
 ####################################
 update log
 20180412 version alpha 1:
-    1. 
+    1. The code work 
 '''
 import tensorflow as tf
 import time
@@ -29,38 +31,66 @@ if __name__ == "__main__":
     VERBOSE = 0
     # measure times
     start_time = time.time()
-    #-----------------------------------
+    #----------------------------------------
     # initialize variables
     data = None
     tracer = None
     cls_pred = None
     cls_true = None
-    sub_name = "source_sed_MaxLoss16"
-    time_stamp = None
+    directory = None
+    #----------------------------------------
     # load argv
-    if len(argv) != 2:
+    if len(argv) != 3:
         print ("Error!\nUsage: test_tracer.py [directory]")
         exit()
-    time_stamp = argv[1]
+    directory = argv[1]
+    sub_name = argv[2]
+    #----------------------------------------
     # load tracer
-    failure, data, tracer = load_lib.load_arrangement(sub_name, time_stamp)
+    failure, data, tracer = load_lib.load_arrangement(sub_name, directory)
     if not failure:
         print ("load data and tracer success")
-    failure, cls_pred = load_lib.load_cls_pred(sub_name, time_stamp)
+    #----------------------------------------
+    # load cls_pred
+    failure, cls_pred = load_lib.load_cls_pred(sub_name, directory)
     if not failure:
         print ("load cls_pred success")
-    failure, cls_true = load_lib.load_cls_true(sub_name, time_stamp)
+    #----------------------------------------
+    # load cls_true
+    failure, cls_true = load_lib.load_cls_true(sub_name, directory)
     if not failure:
         print ("load cls_true success")
+    #----------------------------------------
     # test
+    print ("### data number ###")
     print ("length of training data set: {0}".format(len(data.train.images)))
     print ("length of validation data set: {0}".format(len(data.validation.images)))
     print ("length of test data set: {0}".format(len(data.test.images)))
-    print ("{0} | {1}\n".format(len(cls_pred), len(cls_true)))
+    print ("({0} | {1})\n".format(len(cls_pred), len(cls_true)))
     # confusion matrix
+    print ("### confusion matrix ###")
     failure, cm = load_lib.plot_confusion_matrix(cls_true, cls_pred)
     if not failure:
         print ("confusion matrix success")
+    # print data and the corresponding shuffle tracer of the first data
+    print ("### The first datum in dataset ###")
+    print ("data.test.images: {0}".format(data.test.images[0]))
+    print ("shuffle tracer: {0}".format(tracer.test[0]))
+    print ("true label: {0}".format(cls_true[0]))
+    print ("predict label: {0}".format(cls_pred[0]))
+    # print data and the corresponding shuffle tracer of the last data
+    print ("### The final datum in dataset ###")
+    print ("data.test.images: {0}".format(data.test.images[-1]))
+    print ("shuffle tracer: {0}".format(tracer.test[-1]))
+    print ("true label: {0}".format(cls_true[-1]))
+    print ("predict label: {0}\n".format(cls_pred[-1]))
+    #-----------------------------------
+    print ("number of stars: {0}".format(len(cls_true[cls_true == 0])))
+    print ("number of galaxies: {0}".format(len(cls_true[cls_true == 1])))
+    print ("number of YSOs: {0}".format(len(cls_true[cls_true == 2])))
+    galc2yso = tracer.test[(cls_true == 1) &(cls_pred == 2)]
+    print (galc2yso)
+    print ("number of galc to yso: {0}".format(len(galc2yso)))
     #-----------------------------------
     # measuring time
     elapsed_time = time.time() - start_time

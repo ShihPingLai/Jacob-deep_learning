@@ -40,33 +40,48 @@ from astro_mnist import DataSet, shuffled_tracer
 
 # This is used to load data, label, and shuffle tracer
 def load_arrangement(sub_name, 
-                    time_stamp, 
+                    directory, 
                     reshape=False,
                     dtype=dtypes.float32,
                     seed=None,
                     ):
-    # time_stamp is used to create a uniq folder
+    # directory is where you save AI
     # sub_name is used to denote filename
     # data contains data set and label
     # tracer is just tracer
+    # initialize variables
+    train_tracer    = np.array([])
+    train_data      = np.array([]) 
+    train_labels    = np.array([])
+    valid_tracer    = np.array([])
+    valid_data      = np.array([])
+    valid_labels    = np.array([])
+    test_tracer     = np.array([])
+    test_data       = np.array([])
+    test_labels     = np.array([])
     # create folder
-    if not os.path.exists(time_stamp):
+    if not os.path.exists(directory):
         print("Directory not found")
         return 1, None
     # if directory is not null, load data, labels and tracers
     try:
-        train_tracer    = np.load("{0}/training_tracer_{1}.npy".format(time_stamp, sub_name))
-        train_data      = np.load("{0}/training_set_{1}.npy".format(time_stamp, sub_name))
-        train_labels    = np.load("{0}/training_label_{1}.npy".format(time_stamp, sub_name))
-        valid_tracer    = np.load("{0}/validation_tracer_{1}.npy".format(time_stamp, sub_name))
-        valid_data      = np.load("{0}/validation_set_{1}.npy".format(time_stamp, sub_name))
-        valid_labels    = np.load("{0}/validation_labels_{1}.npy".format(time_stamp, sub_name))
-        test_tracer     = np.load("{0}/test_tracer_{1}.npy".format(time_stamp, sub_name))
-        test_data       = np.load("{0}/test_set_{1}.npy".format(time_stamp, sub_name))
-        test_labels     = np.load("{0}/test_labels_{1}.npy".format(time_stamp, sub_name))
+        train_tracer    = np.load("{0}/training_tracer_source_sed_{1}.npy".format(directory, sub_name))
+        train_data      = np.load("{0}/training_set_source_sed_{1}.npy".format(directory, sub_name))
+        train_labels    = np.load("{0}/training_label_source_sed_{1}.npy".format(directory, sub_name))
     except:
-        print("data or label or tracer aren't completed")
-        return 1, None, None
+        print("In train dataset, data or label or tracer aren't completed")
+    try:
+        valid_tracer    = np.load("{0}/validation_tracer_source_sed_{1}.npy".format(directory, sub_name))
+        valid_data      = np.load("{0}/validation_set_source_sed_{1}.npy".format(directory, sub_name))
+        valid_labels    = np.load("{0}/validation_labels_source_sed_{1}.npy".format(directory, sub_name))
+    except:
+        print("In validation dataset, data or label or tracer aren't completed")
+    try:
+        test_tracer     = np.load("{0}/test_tracer_source_sed_{1}.npy".format(directory, sub_name))
+        test_data       = np.load("{0}/test_set_source_sed_{1}.npy".format(directory, sub_name))
+        test_labels     = np.load("{0}/test_labels_source_sed_{1}.npy".format(directory, sub_name))
+    except:
+        print("In test dataset, data or label or tracer aren't completed")
     options = dict(dtype=dtype, reshape=reshape, seed=seed)
     # generate tracer
     tracer = shuffled_tracer(train_tracer, valid_tracer, test_tracer)
@@ -84,24 +99,24 @@ def load_table_tracer():
     return 0, table_tracer
 
 # This is used to loading pred label
-def load_cls_pred(sub_name, time_stamp):
-    # time_stamp is used to create a uniq folder
+def load_cls_pred(sub_name, directory):
+    # directory is used to create a uniq folder
     # sub_name is used to denote filename
     # cls_pred is predicted label
     try:
-        cls_pred = np.load("{0}/test_cls_pred_{1}.npy".format(time_stamp, sub_name))
+        cls_pred = np.load("{0}/test_cls_pred_source_sed_{1}.npy".format(directory, sub_name))
     except:
         print("test_cls_pred not found")
         return 1, None
     return 0, cls_pred
 
 # THis is used to loading true label
-def load_cls_true(sub_name, time_stamp):
-    # time_stamp is used to create a uniq folder
+def load_cls_true(sub_name, directory):
+    # directory is used to create a uniq folder
     # sub_name is used to denote filename
     # cls_pred is true label
     try:
-        cls_true = np.load("{0}/test_cls_true_{1}.npy".format(time_stamp, sub_name))
+        cls_true = np.load("{0}/test_cls_true_source_sed_{1}.npy".format(directory, sub_name))
     except:
         print ("test_cls_true not found")
         return 1, None
@@ -122,7 +137,7 @@ def print_precision(y_true, y_pred):
         denominator = np.where(y_pred == label)
         numerator = np.where((y_pred == label) & (y_true == label))
         precision = len(numerator[0])/len(denominator[0])
-        print("precision for predict {0} is : {1} ({2} /{3} )".format(objects[label], precision, len(numerator[0]), len(denominator[0])))
+        print("precision for predict {0} is : {1:.2f}% ({2} /{3} )".format(objects[label], precision*100, len(numerator[0]), len(denominator[0])))
     return
 
 def print_recall_rate(y_true, y_pred):
@@ -132,5 +147,5 @@ def print_recall_rate(y_true, y_pred):
         denominator = np.where(y_true == label)
         numerator = np.where((y_pred == label) & (y_true == label))
         precision = len(numerator[0])/len(denominator[0])
-        print("recall-rate for true {0} is : {1} ({2} /{3} )".format(objects[label], precision, len(numerator[0]), len(denominator[0])))
+        print("recall-rate for true {0} is : {1:.2f}% ({2} /{3} )".format(objects[label], precision*100, len(numerator[0]), len(denominator[0])))
     return
