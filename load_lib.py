@@ -123,11 +123,10 @@ def load_cls_true(sub_name, directory):
     return 0, cls_true
 
 # generate confusion matrix with given cls_true and cls_pred
-def plot_confusion_matrix(cls_true, cls_pred):
+def confusion_matrix(cls_true, cls_pred):
     from sklearn.metrics import confusion_matrix
     cm = confusion_matrix(y_true=cls_true,
                           y_pred=cls_pred)
-    print(cm)
     return 0, cm
 
 def print_precision(y_true, y_pred):
