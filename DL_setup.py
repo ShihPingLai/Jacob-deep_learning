@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 '''
 Program:
-This is a program to setup tat python3 code. 
+This is a program to setup DL python3 code. 
 For Linux and macOS only
 Usage:
-    1. tat_setup.py
+    1. DL_setup.py
 editor:
     Jacob975
 
@@ -46,7 +46,7 @@ def set_path_linux(py_path, path = ""):
         if VERBOSE>0:print (temp)
         os.system(temp)
 
-# This method is used to set the path in the first line of each tat_python programm file
+# This method is used to set the path in the first line of each DL_python programm file
 def set_path_mac(py_path, path = ""):
     py_list = glob.glob("{0}/*.py".format(path))
     for name in py_list:
@@ -69,7 +69,7 @@ if VERBOSE>0:
     print ("path of python3 writen in DL_conf.py: {0}".format(py_path))
 # get path of DL code from DL_conf
 code_path = DL_conf.path_of_source_code
-# set path of python into all tat_python program file
+# set path of python into all DL_python program file
 if platform == "linux" or platform == "linux2":
     set_path_linux(py_path, code_path)
     # process all code in nest folder
@@ -93,7 +93,7 @@ elif platform == "darwin":
             os.chdir(code_path)
 
 else:
-    print ("you system is not fit the requirement of tat_python")
+    print ("you system is not fit the requirement of DL_python")
     print ("Please use Linux of macOS")
     exit()
 

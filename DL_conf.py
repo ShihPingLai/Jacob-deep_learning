@@ -24,6 +24,6 @@ update log
 path_of_python = "/usr/bin/python3"
 
 #--------------- Setting source code path ------------------
-# code path means where do you install these code about tat.
-# recommand: /home/username/bin/tat_python
+# code path means where do you install these code about DL.
+# recommand: /home/username/bin/DL_python
 path_of_source_code = "/home/Jacob975/bin/deep_learning"
