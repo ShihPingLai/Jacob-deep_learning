@@ -69,7 +69,7 @@ if __name__ == "__main__":
     print ("({0} | {1})\n".format(len(cls_pred), len(cls_true)))
     # confusion matrix
     print ("### confusion matrix ###")
-    failure, cm = load_lib.plot_confusion_matrix(cls_true, cls_pred)
+    failure, cm = load_lib.confusion_matrix(cls_true, cls_pred)
     if not failure:
         print ("confusion matrix success")
     # print data and the corresponding shuffle tracer of the first data
