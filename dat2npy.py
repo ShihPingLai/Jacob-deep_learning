@@ -85,7 +85,7 @@ def read_well_known_data(data_name):
 def normalize(inp):
     # take norm
     h = len(inp)
-    norm = np.abs(inp).sum(axis=1)
+    norm = np.amax(inp, axis=1)
     outp = inp / norm.reshape(h,1)
     # make each no observation having the same value
     outp[outp <= 0.0] = 0.0
@@ -112,6 +112,7 @@ if __name__ == "__main__":
     #----------------------------------
     # read argv
     data_name_list = argv[1:]
+    print ("The command is:\n {0}".format(argv))
     print ("data to be processed: {0}".format(data_name_list))
     # how many element in a data vector
     data_width = 16

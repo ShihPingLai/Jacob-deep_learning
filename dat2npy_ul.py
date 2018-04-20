@@ -67,7 +67,7 @@ def read_well_known_data(data_name):
 def normalize(inp):
     # take norm
     h = len(inp)
-    norm = np.abs(inp).sum(axis=1)
+    norm = np.amax(inp, axis=1)
     outp = inp / norm.reshape(h,1)
     outp[outp < 0 ]= -9.99e+02
     outp.reshape(-1, data_width)
@@ -95,6 +95,7 @@ if __name__ == "__main__":
     #----------------------------------
     # read argv
     data_name_list = argv[1:]
+    print ("The command is:\n {0}".format(argv))
     print ("data to be processed: {0}".format(data_name_list))
     #-----------------------------------
     # Load data
