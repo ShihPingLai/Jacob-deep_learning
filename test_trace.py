@@ -41,23 +41,23 @@ if __name__ == "__main__":
     #----------------------------------------
     # load argv
     if len(argv) != 3:
-        print ("Error!\nUsage: test_tracer.py [directory]")
+        print ("Error!\nUsage: test_tracer.py [directory] [keyword]")
         exit()
     directory = argv[1]
-    sub_name = argv[2]
+    keyword = argv[2]
     #----------------------------------------
     # load tracer
-    failure, data, tracer = load_lib.load_arrangement(sub_name, directory)
+    failure, data, tracer = load_lib.load_arrangement(keyword, directory)
     if not failure:
         print ("load data and tracer success")
     #----------------------------------------
     # load cls_pred
-    failure, cls_pred = load_lib.load_cls_pred(sub_name, directory)
+    failure, cls_pred = load_lib.load_cls_pred(keyword, directory)
     if not failure:
         print ("load cls_pred success")
     #----------------------------------------
     # load cls_true
-    failure, cls_true = load_lib.load_cls_true(sub_name, directory)
+    failure, cls_true = load_lib.load_cls_true(keyword, directory)
     if not failure:
         print ("load cls_true success")
     #----------------------------------------
@@ -72,6 +72,7 @@ if __name__ == "__main__":
     failure, cm = load_lib.confusion_matrix(cls_true, cls_pred)
     if not failure:
         print ("confusion matrix success")
+    print (cm)
     # print data and the corresponding shuffle tracer of the first data
     print ("### The first datum in dataset ###")
     print ("data.test.images: {0}".format(data.test.images[0]))
@@ -88,9 +89,9 @@ if __name__ == "__main__":
     print ("number of stars: {0}".format(len(cls_true[cls_true == 0])))
     print ("number of galaxies: {0}".format(len(cls_true[cls_true == 1])))
     print ("number of YSOs: {0}".format(len(cls_true[cls_true == 2])))
-    galc2yso = tracer.test[(cls_true == 1) &(cls_pred == 2)]
-    print (galc2yso)
-    print ("number of galc to yso: {0}".format(len(galc2yso)))
+    gala2yso = tracer.test[(cls_true == 1) &(cls_pred == 2)]
+    print (gala2yso)
+    print ("number of galc to yso: {0}".format(len(gala2yso)))
     #-----------------------------------
     # measuring time
     elapsed_time = time.time() - start_time

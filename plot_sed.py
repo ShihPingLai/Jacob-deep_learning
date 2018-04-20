@@ -3,9 +3,9 @@
 Abstract:
     This is a program to show the data with different true and prediction 
 Usage:
-    true_and_pred.py [keyword] [true label] [pred label]
+    plot_sed.py [keyword] [true label] [pred label]
 Example:
-    true_and_pred.py MaxLoss15 1 2
+    plot_sed.py MaxLoss15 1 2
 Editor:
     Jacob975
 
@@ -28,6 +28,17 @@ from sys import argv
 from glob import glob
 import matplotlib.pyplot as plt
 
+def get_sed(detected_occurance, n, data, tracer):
+    # initialize variables
+    normed_by_band = dict()
+    for key in detected_occurance:
+        if detected_occurance[key] == n:
+            print (key)
+            print (data[np.where(tracer == key)])
+            print ("")
+            normed_by_band[key] = data[np.where(tracer == key)]
+    return normed_by_band
+
 #--------------------------------------------
 # main code
 if __name__ == "__main__":
@@ -41,11 +52,14 @@ if __name__ == "__main__":
     cls_pred = None
     cls_true = None
     collected_tracer_in_confusion_matrix = np.array([])
+    collected_sed_in_confusion_matrix = np.array([])
+    normed_by_band = None
+    n = 5
     true_ = pred_ = ["star", "gala", "yso"]
     #----------------------------------------
     # load argv
     if len(argv) != 4:
-        print ("Error!\nUsage: true_and_pred.py [keyword] [true label] [pred label]")
+        print ("Error!\nUsage: plot_sed.py [keyword] [true label] [pred label]")
         exit()
     keyword = argv[1]
     true_label = int(argv[2])
@@ -84,18 +98,22 @@ if __name__ == "__main__":
         collected_tracer_in_confusion_matrix = np.append(collected_tracer_in_confusion_matrix, tracer_in_confusion_matrix)
         print ("number of gala to yso: {0}".format(len(tracer_in_confusion_matrix)))
         # save tracer_in_confusion_matrix
-        np.save("{0}/{1}_true_{2}_pred_{3}.npy".format(directory, keyword, true_[true_label], pred_[pred_label]), 
+        np.save("{0}/{1}_tracer_true_{2}_pred_{3}.npy".format(directory, keyword, true_[true_label], pred_[pred_label]), 
                 tracer_in_confusion_matrix)
-        np.savetxt("{0}/{1}_true_{2}_pred_{3}.txt".format(directory, keyword, true_[true_label], pred_[pred_label]), 
+        np.savetxt("{0}/{1}_tracer_true_{2}_pred_{3}.txt".format(directory, keyword, true_[true_label], pred_[pred_label]), 
                 tracer_in_confusion_matrix)
     # save collected_tracer_in_confusion_matrix
-    np.save("all_true_{0}_pred_{1}.npy".format(true_[true_label], pred_[pred_label]), collected_tracer_in_confusion_matrix)
-    np.savetxt("all_true_{0}_pred_{1}.txt".format(true_[true_label], pred_[pred_label]), collected_tracer_in_confusion_matrix)
-    # plot the result
+    np.save("all_tracer_true_{0}_pred_{1}.npy".format(true_[true_label], pred_[pred_label]), collected_tracer_in_confusion_matrix)
+    np.savetxt("all_tracer_true_{0}_pred_{1}.txt".format(true_[true_label], pred_[pred_label]), collected_tracer_in_confusion_matrix)
+    # sort object by band
     detected_occurance = collections.Counter(collected_tracer_in_confusion_matrix)
-    result_plt = plt.figure("histogram of true: {0}, pred: {1}".format(true_[true_label], pred_[pred_label]))
-    plt.bar(list(detected_occurance.keys()), list(detected_occurance.values()))
-    result_plt.savefig("histogram_true_{0}_pred_{1}.png".format(true_[true_label], pred_[pred_label]))
+    normed_by_band = get_sed(detected_occurance, n, data.test.images, tracer.test)
+    # plot the sed band by band
+    result_plt = plt.figure("sed of true: {0}, pred: {1}".format(true_[true_label], pred_[pred_label]))
+    for key, value in normed_by_band.items():
+        print (value[0][:8])
+        plt.plot(range(1, 17), value[0])
+    result_plt.savefig("sed_true_{0}_pred_{1}.png".format(true_[true_label], pred_[pred_label]))
     #----------------------------------------
     # measuring time
     elapsed_time = time.time() - start_time

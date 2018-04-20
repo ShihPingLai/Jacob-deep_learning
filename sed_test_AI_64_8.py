@@ -3,7 +3,7 @@
 Abstract:
     This is a code for test AI with given sed data.
 Usage:
-    sed_test_AI_64_8.py [source] [id] [timestamp] [AI]
+    sed_test_AI_64_8.py [source] [id] [directory] [AI]
 Editor and Practicer:
     Jacob975
 
@@ -20,7 +20,7 @@ update log
     20180226 version alpha 2:
     the AI can be choosed.
     20180412 version alpha 3:
-    1. make timestamp a argument
+    1. make directory a argument
     20180414 version alpha 4:
     1. add funcs for print precision and recall-rate.
 '''
