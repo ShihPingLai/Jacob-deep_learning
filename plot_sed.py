@@ -30,13 +30,12 @@ import matplotlib.pyplot as plt
 
 def get_sed(detected_occurance, n, data, tracer):
     # initialize variables
-    normed_by_band = dict()
+    normed_by_band = [dict() for i in range(8)]
     for key in detected_occurance:
         if detected_occurance[key] == n:
-            print (key)
-            print (data[np.where(tracer == key)])
-            print ("")
-            normed_by_band[key] = data[np.where(tracer == key)]
+            selected_data = data[np.where(tracer == key)] 
+            ind_of_peak = np.argmax(selected_data)
+            normed_by_band[ind_of_peak][key] = selected_data
     return normed_by_band
 
 #--------------------------------------------
@@ -109,11 +108,13 @@ if __name__ == "__main__":
     detected_occurance = collections.Counter(collected_tracer_in_confusion_matrix)
     normed_by_band = get_sed(detected_occurance, n, data.test.images, tracer.test)
     # plot the sed band by band
-    result_plt = plt.figure("sed of true: {0}, pred: {1}".format(true_[true_label], pred_[pred_label]))
-    for key, value in normed_by_band.items():
-        print (value[0][:8])
-        plt.plot(range(1, 17), value[0])
-    result_plt.savefig("sed_true_{0}_pred_{1}.png".format(true_[true_label], pred_[pred_label]))
+    for ind, peak_at in enumerate(normed_by_band):
+        if len(peak_at) == 0:
+            continue
+        result_plt = plt.figure("sed of true: {0}, pred: {1}, peak at {2} band".format(true_[true_label], pred_[pred_label], ind))
+        for key, value in peak_at.items():
+            plt.plot(range(1, 17), value[0])
+        result_plt.savefig("sed_true_{0}_pred_{1}_peak_at_{2}_band.png".format(true_[true_label], pred_[pred_label], ind))
     #----------------------------------------
     # measuring time
     elapsed_time = time.time() - start_time
