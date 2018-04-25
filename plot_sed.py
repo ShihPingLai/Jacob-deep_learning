@@ -32,7 +32,7 @@ def get_sed(detected_occurance, n, data, tracer):
     # initialize variables
     normed_by_band = [dict() for i in range(8)]
     for key in detected_occurance:
-        if detected_occurance[key] == n:
+        if detected_occurance[key] >= n:
             selected_data = data[np.where(tracer == key)] 
             ind_of_peak = np.argmax(selected_data)
             normed_by_band[ind_of_peak][key] = selected_data
