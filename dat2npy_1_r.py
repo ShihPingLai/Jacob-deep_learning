@@ -2,7 +2,7 @@
 '''
 Abstract:
     This is a program to convert .dat files to npy files
-    The feature of this version is that set pairized no-detection as -9.99e+02
+    The feature of this version is that set all number smaller than 0 as 0
 
 --------------------------------------------------
                 no observation      no detection
@@ -13,7 +13,7 @@ dat2npy_pair    -9.99e+02           0.00
 --------------------------------------------------
 
 Usage:
-    dat2npy_pair.py [file name 1] [file name 2] [file name 3] ...
+    dat2npy_1_r.py [file name 1] [file name 2] [file name 3] ...
     [file name]:
         The file you want to processed.
         The first will be labeded as 0, the second will be labeded as 1, so as on.
@@ -29,33 +29,67 @@ Example:
 Editor:
     Jacob975
 
-20180415
+20180123
 ####################################
 update log
-
-20180415 version alpha 1:
-    1. the code work
+20180123 version alpha 1
+    Now it works, the code can convert both source and label into tensorflow readable
+20180124 version alpha 2
+    1. Now feature, you can choose processing label or data by argv.
+    2. Now the data will be normalized.
+20180301 version alpha 3
+    1. You can choose how many zero will be tolerated.
+20180306 version alpha 4
+    1. no argv for data mod and label mod anymore, for replacement, the code will generate label with data process.
+    2. now you can process a sequence of data with label in order.
+20180320 version alpha 5 
+    1. add a tracer to dat data set
+20180322 version alpha 6
+    1. rename tracer
+20180323 version alpha 7:
+    1. rearrange the tracer
+20180414 version alpha 8:
+    1. denote no-observation as -9.99+e02
+    2. rename func nozero_filter as no_observation_filter
+20180415 version alpha 9:
+    1. denote no-observation as 0 instead of -9.99+e02, if you need -9.99e+02, please use dat2npy_const.py
 '''
 import tensorflow as tf
 import time
 import re           # this is used to apply multiple spliting
 import numpy as np
 from sys import argv
-from dat2npy import read_well_known_data
+
 # how many element in a data vector
 data_width = 16
+
+# the def is used to read a list of data with the same class.
+def read_well_known_data(data_name):
+    f = open(data_name, 'r')
+    data = []
+    for ind, line in enumerate(f.readlines(), start = 0):
+        # skip if no data or it's a hint.
+        if not len(line) or line.startswith('#'):
+            continue
+        row = re.split('[,\n\[\]]+', line)
+        # clean the empty element
+        row_c = [x for x in row if x != ""]
+        if len(row_c) != data_width:
+            print (line[:-1])
+            print ("the row {0} is wrong.\n".format(ind))
+            continue
+        data.append(row_c)
+    f.close()
+    return data
 
 def normalize(inp):
     # take norm
     h = len(inp)
     norm = np.amax(inp, axis=1)
     outp = inp / norm.reshape(h,1)
-    # make paired no observation having the same value -9.99e+02
-    outp[outp <= 0.0] = 0.0
-    for row in outp:
-        for i in range(len(row)//2):
-            if (row[i] <= 0.0) and (row[i+8] <= 0.0):
-                row[i] = row[i+8] = -9.99e+02
+    # make each no observation having the same value
+    outp[outp <= -9.99e+02] = -1.0
+    outp[outp == 0.0] = -1.0
     outp.reshape(-1, data_width)
     return outp
 
@@ -63,7 +97,7 @@ def no_observation_filter(data_name, inp, maximun):
     # load tracer
     tracer_inp = np.loadtxt("{0}_tracer.dat".format(data_name[:-8]))
     # set up MaxLoss filter
-    _filter= np.array([ np.count_nonzero(row == -9.99e+02) <= maximun for row in inp])
+    _filter= np.array([ np.count_nonzero(row == -1.0) <= maximun for row in inp])
     # apply filter
     outp = inp[_filter]
     tracer_outp = tracer_inp[_filter]
@@ -79,7 +113,7 @@ if __name__ == "__main__":
     #----------------------------------
     # read argv
     data_name_list = argv[1:]
-    print ("The command is: \n {0}".format(argv))
+    print ("The command is:\n {0}".format(argv))
     print ("data to be processed: {0}".format(data_name_list))
     # how many element in a data vector
     data_width = 16
@@ -96,7 +130,7 @@ if __name__ == "__main__":
         str_data = read_well_known_data(data_name)
         data = np.array(str_data, dtype = float)
         data_n = normalize(data)
-        # no-observation filter
+        # no observation filter
         for i in range(data_width):
             data_n_z, tracer_outp= no_observation_filter(data_name, data_n, i)
             print ("MaxLoss = {0}, number of data = {1}".format(i, len(data_n_z)))
