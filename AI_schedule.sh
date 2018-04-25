@@ -20,8 +20,9 @@ do
         # record when the program start
         # time stamp is used as identification
         timestamp=`date --rfc-3339=seconds`
-        mkdir "${timestamp}"
-        sed_04_64_8.py source_sed_${keyword}.npy source_id_${keyword}.npy "${timestamp}" > "${timestamp}/Iters_${iter}"
+        mkdir "${timestamp}_trained_by_${keyword}"
+        sed_04_64_8.py source_sed_${keyword}.npy source_id_${keyword}.npy \
+                        "${timestamp}_trained_by_${keyword}" > "${timestamp}_trained_by_${keyword}/Iters_log"
         (( iter++ ))
 done
 exit 0
