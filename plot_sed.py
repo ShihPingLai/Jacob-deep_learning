@@ -35,7 +35,10 @@ def get_sed(detected_occurance, n, data, tracer):
         if detected_occurance[key] >= n:
             selected_data = data[np.where(tracer == key)] 
             ind_of_peak = np.argmax(selected_data)
-            normed_by_band[ind_of_peak][key] = selected_data
+            if ind_of_peak >= 8:
+                continue
+            else:
+                normed_by_band[ind_of_peak][key] = selected_data
     return normed_by_band
 
 #--------------------------------------------
@@ -105,7 +108,9 @@ if __name__ == "__main__":
     np.save("all_tracer_true_{0}_pred_{1}.npy".format(true_[true_label], pred_[pred_label]), collected_tracer_in_confusion_matrix)
     np.savetxt("all_tracer_true_{0}_pred_{1}.txt".format(true_[true_label], pred_[pred_label]), collected_tracer_in_confusion_matrix)
     # sort object by band
+    print("detect the occurance")
     detected_occurance = collections.Counter(collected_tracer_in_confusion_matrix)
+    print("select by band")
     normed_by_band = get_sed(detected_occurance, n, data.test.images, tracer.test)
     # plot the sed band by band
     for ind, peak_at in enumerate(normed_by_band):

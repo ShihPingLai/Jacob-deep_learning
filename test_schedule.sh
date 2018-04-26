@@ -36,7 +36,7 @@ do
 
     # create a directory to save result of testing
     mkdir -p "AI_${AI_NAME}_test_on_${keyword_set}"
-    if [ "${keyword_AI}" -eq 0 ];then
+    if [ "${keyword_AI}" -eq "0" ];then
         echo "MaxLoss${iters}"
         sed_test_AI_64_8.py source_sed_${keyword_set}.npy source_id_${keyword_set}.npy "AI_${AI_NAME}_test_on_${keyword_set}"\
                             "${each}checkpoint_AI_64_8_source_sed_MaxLoss${iters}" \
