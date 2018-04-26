@@ -88,8 +88,8 @@ def normalize(inp):
     norm = np.amax(inp, axis=1)
     outp = inp / norm.reshape(h,1)
     # make each no observation having the same value
-    outp[outp <= -9.99e+02] = -1.0
-    outp[outp == 0.0] = -1.0
+    outp[inp == -9.99e+02] = -1.0
+    outp[inp == 0.0] = -1.0
     outp.reshape(-1, data_width)
     return outp
 
